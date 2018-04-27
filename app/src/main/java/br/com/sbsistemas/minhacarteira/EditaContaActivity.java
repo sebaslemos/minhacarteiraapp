@@ -43,7 +43,7 @@ public class EditaContaActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
-    @Override 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_formulario_conta, menu);
         return super.onCreateOptionsMenu(menu);

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/lista_contas_linha_descricao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/lista_contas_linha_valor"
+        android:text="Bar do Cuscuz"
+        android:textSize="20sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/black"
+        android:lines="1"
+        android:scrollHorizontally="true"/>
+
+   <TextView
+        android:layout_alignTop="@id/lista_contas_linha_descricao"
+        android:id="@+id/lista_contas_linha_valor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="R$ 200,00"
+        android:textSize="17sp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+       android:textColor="@color/black"/>
+
+    <CheckBox
+        android:id="@+id/lista_contas_linha_pago"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/lista_contas_linha_valor"
+        android:hint="Pago"
+        android:textColorHint="@color/primaryTextColor"
+        android:button="@null"
+        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        />
+
+    <TextView
+        android:id="@+id/lista_contas_linha_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="[27/08/2017]"
+        android:layout_alignBottom="@id/lista_contas_linha_pago"
+        android:layout_toLeftOf="@id/lista_contas_linha_valor"
+        android:layout_below="@id/lista_contas_linha_descricao"
+        android:layout_alignLeft="@id/lista_contas_linha_descricao"
+        android:gravity="left|center"/>
+
+
+</RelativeLayout>

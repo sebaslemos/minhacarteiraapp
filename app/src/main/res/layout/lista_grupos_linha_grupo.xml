@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/linha_grupo_icone"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:foregroundGravity="center"
+        android:layout_centerInParent="true"
+        />
+
+    <TextView
+        android:id="@+id/linha_grupo_descricao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/linha_grupo_icone"
+        android:textSize="20sp"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/linha_grupo_numero_contas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:layout_alignLeft="@id/linha_grupo_descricao"
+        android:layout_below="@id/linha_grupo_descricao"/>
+
+    <TextView
+        android:id="@+id/linha_grupo_totalGasto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_alignTop="@id/linha_grupo_descricao"
+        android:layout_alignBottom="@id/linha_grupo_numero_contas"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/black"/>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="12dp"
+        android:layout_height="32dp"
+        android:id="@+id/lista_categoria_linha_categoria_icone"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:layout_alignTop="@+id/lista_categoria_linha_categoria_descricao"
+        android:layout_alignBottom="@+id/lista_categoria_linha_categoria_numero_contas"
+        />
+
+    <TextView
+        android:id="@+id/lista_categoria_linha_categoria_descricao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/black"
+        android:layout_toRightOf="@+id/lista_categoria_linha_categoria_icone"
+        />
+
+    <TextView
+        android:id="@+id/lista_categoria_linha_categoria_numero_contas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:layout_alignLeft="@id/lista_categoria_linha_categoria_descricao"
+        android:layout_below="@id/lista_categoria_linha_categoria_descricao"/>
+
+    <TextView
+        android:id="@+id/lista_categoria_linha_categoria_totalGasto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_alignTop="@id/lista_categoria_linha_categoria_descricao"
+        android:layout_alignBottom="@id/lista_categoria_linha_categoria_numero_contas"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/black"/>
+
+
+
+</RelativeLayout>

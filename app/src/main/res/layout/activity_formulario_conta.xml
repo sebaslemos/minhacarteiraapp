@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.com.sbsistemas.minhacarteira.FormularioContaActivity"
+    android:orientation="vertical"
+    >
+
+    <EditText
+        android:id="@+id/formulario_conta_descricao"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Descrição da Conta"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Grupo"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_marginLeft="5dp"
+            />
+
+        <TextView
+            android:id="@+id/formulario_conta_grupo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Selecionar Grupo"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:onClick="selecionaCategoria"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Categoria"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_marginLeft="5dp"
+            />
+
+        <TextView
+            android:id="@+id/formulario_conta_categoria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Selecionar Categoria"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:onClick="selecionaCategoria"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Data"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_marginLeft="5dp"
+            />
+
+        <TextView
+            android:id="@+id/formulario_conta_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Selecionar Data"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:onClick="selecionaData"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Conta Paga"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            />
+
+        <Switch
+            android:id="@+id/formulario_conta_pago"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Conta Ativa"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            />
+
+        <Switch
+            android:id="@+id/formulario_conta_ativa"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:checked="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Valor"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            />
+
+        <EditText
+            android:id="@+id/formulario_conta_valor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textAlignment="center"
+            android:inputType="numberDecimal"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Número de Prestações"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            />
+
+        <EditText
+            android:id="@+id/formulario_conta_num_prest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textAlignment="center"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

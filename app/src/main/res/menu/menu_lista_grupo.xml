@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_lista_grupo_add_receita"
+        android:title="Ok"
+        android:icon="@drawable/add_receita2"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/menu_lista_grupo_add_conta"
+        android:title="Ok"
+        android:icon="@drawable/add_conta3"
+        app:showAsAction="always"
+        />
+</menu>

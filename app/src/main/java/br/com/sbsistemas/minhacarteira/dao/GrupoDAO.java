@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
+import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
 /**
  * Created by sebas on 05/08/2017.
@@ -131,4 +133,43 @@ public class GrupoDAO{
 
         return null;
     }
+
+    public QuantidadeValorTO getQuantitadeValor(Grupo grupo, int mes, int ano){
+        String SQL =
+                "select count( * ) as QUANTIDADE, sum(co.valor) as VALOR" +
+                " from " + NOME_TABELA + " g " +
+                " inner join " + CategoriaDAO.NOME_TABELA + " ca " +
+                        "on ca." + CategoriaDAO.COLUNA_GRUPO_ID + " = g." + COLUNA_ID +
+                " inner join " + ContaDAO.NOME_TABELA + " co " +
+                        "on co." + ContaDAO.COLUNA_CATEGORIA_ID + " = ca." + CategoriaDAO.COLUNA_ID +
+                " inner join " + PrestacoesDAO.NOME_TABELA + " p " +
+                        "on p."+PrestacoesDAO.COLUNA_CONTA_ID+" = co."+ ContaDAO.COLUNA_ID +
+                " and p." + PrestacoesDAO.COLUNA_DATA + " >= ?" +
+                " and p." + PrestacoesDAO.COLUNA_DATA + " <= ?" +
+                " and p." + PrestacoesDAO.COLUNA_ATIVO + " = 1";
+        String[] args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano)};
+
+        if(!grupo.getDescricao().equals(GRUPO_TODAS)){
+            SQL = SQL.concat(" and g." + COLUNA_ID + " = ?");
+            args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano),
+                    grupo.getId().toString()};
+        }
+
+        SQLiteDatabase db = minhaCarteiraDBHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SQL, args);
+
+        return cursorToQuantidadeValor(cursor);
+    }
+
+    private QuantidadeValorTO cursorToQuantidadeValor(Cursor cursor) {
+        QuantidadeValorTO quantidadeValorTO = new QuantidadeValorTO();
+
+        cursor.moveToNext();
+        quantidadeValorTO.setQuantidade(cursor.getInt(cursor.getColumnIndex("QUANTIDADE")));
+        quantidadeValorTO.setValor(cursor.getFloat(cursor.getColumnIndex("VALOR")));
+
+        return quantidadeValorTO;
+    }
+
+
 }

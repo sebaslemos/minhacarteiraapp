@@ -35,6 +35,7 @@ import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.adapter.GrupoAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.to.GrupoAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
@@ -180,10 +181,10 @@ public class ListaGrupos extends AppCompatActivity {
         totalReceitasView.setText(totalFormatado);
 
         ControladorGrupo controladorGrupo = new ControladorGrupo(this);
-        BigDecimal gastos = controladorGrupo.getTotalGastosDoGrupo(controladorGrupo.getGrupo(GrupoDAO.GRUPO_TODAS),
+        QuantidadeValorTO quantidadeValorTO = controladorGrupo.getQuantidadeValor(controladorGrupo.getGrupo(GrupoDAO.GRUPO_TODAS),
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
-        BigDecimal saldo = totalReceitas.subtract(gastos);
+        BigDecimal saldo = totalReceitas.subtract(new BigDecimal(quantidadeValorTO.getValor()));
         saldoView.setText(String.format("Saldo R$ %.2f", saldo.doubleValue()));
     }
 
@@ -199,8 +200,10 @@ public class ListaGrupos extends AppCompatActivity {
         List<GrupoAdapterTO> grupoAdapterTOs = new ArrayList<GrupoAdapterTO>();
 
         for(Grupo grupo : grupos){
-            int totalDeContas = controladorGrupo.totalDeContas(grupo, dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-            BigDecimal totalGastosDoGrupo = controladorGrupo.getTotalGastosDoGrupo(grupo, dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
+            QuantidadeValorTO quantidadeValorTO =
+                    controladorGrupo.getQuantidadeValor(grupo, dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
+            int totalDeContas = quantidadeValorTO.getQuantidade();
+            BigDecimal totalGastosDoGrupo = new BigDecimal(quantidadeValorTO.getValor());
             GrupoAdapterTO grupoTO = new GrupoAdapterTO(grupo, totalDeContas, totalGastosDoGrupo);
 
             grupoAdapterTOs.add(grupoTO);

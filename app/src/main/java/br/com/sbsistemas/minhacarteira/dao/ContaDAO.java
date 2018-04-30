@@ -105,14 +105,14 @@ public class ContaDAO {
         if(categoria == null){
             //lista todas
             SQL = "SELECT conta.* " +
-                    " FROM " + NOME_TABELA + " as conta JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
+                    " FROM " + NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
                     " on (prest." + PrestacoesDAO.COLUNA_CONTA_ID + " = conta." + ContaDAO.COLUNA_ID + ")" +
                     " WHERE prest." + PrestacoesDAO.COLUNA_DATA + " >= " + "?" +
                     " AND prest." + PrestacoesDAO.COLUNA_DATA + " <= " + "?";
             args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano)};
         } else{
             SQL = "SELECT conta.* " +
-                    " FROM " + NOME_TABELA + " as conta JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
+                    " FROM " + NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
                     " on (prest." + PrestacoesDAO.COLUNA_CONTA_ID + " = conta." + ContaDAO.COLUNA_ID + ")" +
                     " WHERE prest." + PrestacoesDAO.COLUNA_DATA + " >= " + "?" +
                     " AND prest." + PrestacoesDAO.COLUNA_DATA + " <= " + "?" +

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MinhaCarteiraDBHelper extends SQLiteOpenHelper {
 
-    private static final Integer VERSION = 5;
+    private static final Integer VERSION = 6;
     private static final String DB_NAME = "MINHA_CARTEIRA";
 
     private static MinhaCarteiraDBHelper instance;

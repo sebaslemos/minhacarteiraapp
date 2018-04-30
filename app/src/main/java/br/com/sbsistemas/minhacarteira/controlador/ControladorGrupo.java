@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
@@ -44,29 +45,11 @@ public class ControladorGrupo {
         return grupo;
     }
 
-    public int totalDeContas(Grupo grupo, int mes, int ano){
-        int total = 0;
-        ControladorCategoria controladorCategoria = new ControladorCategoria(context);
-        List<Categoria> categorias = controladorCategoria.getCategorias(grupo);
-
-        for(Categoria categoria : categorias){
-            total += controladorCategoria.getTotalDeContas(categoria, mes, ano);
-        }
-
-        return total;
-    }
-
-    public BigDecimal getTotalGastosDoGrupo(Grupo grupo, int mes, int ano){
-        BigDecimal total = new BigDecimal(0);
-        ControladorCategoria controladorCategoria = new ControladorCategoria(context);
-        List<Categoria> categorias = controladorCategoria.getCategoriasComContas(grupo, mes, ano);
-
-        for (Categoria categoria: categorias) {
-            BigDecimal gastosCategoria = controladorCategoria.getTotalGastosCategoria(categoria, mes, ano);
-            total = total.add(gastosCategoria);
-        }
-
-        return total;
+    public QuantidadeValorTO getQuantidadeValor(Grupo grupo, int mes, int ano){
+        GrupoDAO dao = new GrupoDAO(context);
+        QuantidadeValorTO quantitadeValor = dao.getQuantitadeValor(grupo, mes, ano);
+        dao.close();
+        return quantitadeValor;
     }
 
     public Grupo getGrupo(Long idGrupo) {
@@ -83,8 +66,8 @@ public class ControladorGrupo {
         LocalDate menorData = data;
         for(int i = 1; i <= MESES_A_CONTAR_ESTATISTICAS; i++){
             data = data.minusMonths(1);
-            BigDecimal totalMes = getTotalGastosDoGrupo(grupoSelecionado,
-                    data.getMonthOfYear(), data.getYear());
+            BigDecimal totalMes = new BigDecimal(getQuantidadeValor(grupoSelecionado,
+                    data.getMonthOfYear(), data.getYear()).getValor());
 
             if(!totalMes.equals(new BigDecimal(0)) && totalMes.compareTo(menorValor) <= 0 ){
                 menorValor = totalMes;
@@ -104,8 +87,8 @@ public class ControladorGrupo {
         LocalDate maiorData = data;
         for(int i = 1; i <= MESES_A_CONTAR_ESTATISTICAS; i++){
             data = data.minusMonths(1);
-            BigDecimal totalMes = getTotalGastosDoGrupo(grupoSelecionado,
-                    data.getMonthOfYear(), data.getYear());
+            BigDecimal totalMes = new BigDecimal(getQuantidadeValor(grupoSelecionado,
+                    data.getMonthOfYear(), data.getYear()).getValor());
 
             if(totalMes.compareTo(maiorValor) >= 0){
                 maiorValor = totalMes;
@@ -124,8 +107,8 @@ public class ControladorGrupo {
 
         for(int i = 1; i <= MESES_A_CONTAR_ESTATISTICAS; i++){
             data = data.minusMonths(1);
-            BigDecimal totalGasto = getTotalGastosDoGrupo(grupoSelecionado,
-                    data.getMonthOfYear(), data.getYear());
+            BigDecimal totalGasto = new BigDecimal(getQuantidadeValor(grupoSelecionado,
+                    data.getMonthOfYear(), data.getYear()).getValor());
 
             if(!totalGasto.equals(new BigDecimal(0))){
                 soma = soma.add(totalGasto);

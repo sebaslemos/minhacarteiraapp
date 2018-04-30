@@ -48,6 +48,12 @@ public class PrestacoesDAO {
             "CREATE INDEX " + NOME_IDX_DATA +
             " ON " + NOME_TABELA + " (" + COLUNA_DATA + "," + COLUNA_CONTA_ID + ");";
 
+    private static final String UPDATE_TABLE_V6_1 =
+            "DROP INDEX IF EXISTS " + NOME_IDX_DATA;
+
+    private static final String UPDATE_TABLE_V6_2 =
+            "CREATE INDEX " + NOME_IDX_DATA +
+            " ON " + NOME_TABELA + " (" + COLUNA_DATA + ");";
     private MinhaCarteiraDBHelper dbHelper;
 
     public PrestacoesDAO(Context context){
@@ -62,7 +68,10 @@ public class PrestacoesDAO {
         if(oldVersion < 5){
             db.execSQL(UPDATE_TABLE_V5);
         }
-
+        if(oldVersion < 6){
+            db.execSQL(UPDATE_TABLE_V6_1);
+            db.execSQL(UPDATE_TABLE_V6_2);
+        }
     }
 
     private ContentValues prestacaoToContentValues(Prestacao prestacao) {

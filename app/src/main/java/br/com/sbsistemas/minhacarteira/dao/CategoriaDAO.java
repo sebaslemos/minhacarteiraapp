@@ -20,11 +20,12 @@ public class CategoriaDAO {
 
     //Tabela
     public static final String NOME_TABELA = "Categoria";
+    private static final String NOME_INDEX = "id_grupo_idx";
     public static final String COLUNA_ID = "id";
     public static final String COLUNA_DESCRICAO = "descricao";
     public static final String COLUNA_GRUPO_ID = "id_grupo";
-    public static final String CONSTRAINT_DESCRICAO_UNICA = "descricao_unica";
 
+    public static final String CONSTRAINT_DESCRICAO_UNICA = "descricao_unica";
     //SQLs
     private static final String CREATE_TABLE =
             "CREATE TABLE " + NOME_TABELA +
@@ -36,8 +37,11 @@ public class CategoriaDAO {
             ", CONSTRAINT " + CONSTRAINT_DESCRICAO_UNICA +
                     " UNIQUE (" + COLUNA_DESCRICAO + "," + COLUNA_GRUPO_ID + ")" +
             ");";
+
     private static final String UPDATE_TABLE_DESENV =
             "DROP TABLE IF EXISTS " + NOME_TABELA;
+    private static final String UPDATE_TABLE_V6 =
+            "CREATE INDEX " + NOME_INDEX + " ON " + NOME_TABELA + "( " + COLUNA_GRUPO_ID + " );";
 
     private MinhaCarteiraDBHelper dbHelper;
 
@@ -108,7 +112,9 @@ public class CategoriaDAO {
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if(oldVersion < 6){
+            db.execSQL(UPDATE_TABLE_V6);
+        }
     }
 
     public void close() {

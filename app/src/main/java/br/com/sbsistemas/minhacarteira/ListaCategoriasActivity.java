@@ -35,6 +35,7 @@ import java.util.List;
 import br.com.sbsistemas.minhacarteira.adapter.ListaCategoriaAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.ListaCategoriaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
@@ -197,10 +198,10 @@ public class ListaCategoriasActivity extends AppCompatActivity {
         if(categoria == null){//mostra estatisticas do grupo
             ControladorGrupo controladorGrupo = new ControladorGrupo(this);
             titulo = grupoSelecionado.getDescricao();
-            totalAtual = controladorGrupo.getTotalGastosDoGrupo(grupoSelecionado,
-                    dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-            totalMesAnterior = controladorGrupo.getTotalGastosDoGrupo(grupoSelecionado,
-                    dataSelecionada.minusMonths(1).getMonthOfYear(), dataSelecionada.minusMonths(1).getYear());
+            totalAtual = new BigDecimal(controladorGrupo.getQuantidadeValor(grupoSelecionado,
+                    dataSelecionada.getMonthOfYear(), dataSelecionada.getYear()).getValor());
+            totalMesAnterior = new BigDecimal(controladorGrupo.getQuantidadeValor(grupoSelecionado,
+                    dataSelecionada.minusMonths(1).getMonthOfYear(), dataSelecionada.minusMonths(1).getYear()).getValor());
             menorValor = controladorGrupo.calculaMenorValorGasto(grupoSelecionado,
                     dataSelecionada);
             maiorValor = controladorGrupo.calculaMaiorValorGasto(grupoSelecionado,
@@ -288,10 +289,10 @@ public class ListaCategoriasActivity extends AppCompatActivity {
         totalReceitasView.setText(totalFormatado);
 
         ControladorGrupo controladorGrupo = new ControladorGrupo(this);
-        BigDecimal gastos = controladorGrupo.getTotalGastosDoGrupo(controladorGrupo.getGrupo(GrupoDAO.GRUPO_TODAS),
+        QuantidadeValorTO quantidadeValorTO = controladorGrupo.getQuantidadeValor(controladorGrupo.getGrupo(GrupoDAO.GRUPO_TODAS),
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
-        BigDecimal saldo = totalReceitas.subtract(gastos);
+        BigDecimal saldo = totalReceitas.subtract(new BigDecimal(quantidadeValorTO.getValor()));
         saldoView.setText(String.format("Saldo R$ %.2f", saldo.doubleValue()));
     }
 

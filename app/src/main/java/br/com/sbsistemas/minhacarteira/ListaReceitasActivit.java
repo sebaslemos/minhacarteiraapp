@@ -24,6 +24,7 @@ import java.util.zip.Inflater;
 
 import br.com.sbsistemas.minhacarteira.adapter.ListaReceitasAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
@@ -166,10 +167,10 @@ public class ListaReceitasActivit extends AppCompatActivity {
         totalReceitasView.setText(totalFormatado);
 
         ControladorGrupo controladorGrupo = new ControladorGrupo(this);
-        BigDecimal gastos = controladorGrupo.getTotalGastosDoGrupo(controladorGrupo.getGrupo(GrupoDAO.GRUPO_TODAS),
+        QuantidadeValorTO quantidadeValorTO = controladorGrupo.getQuantidadeValor(controladorGrupo.getGrupo(GrupoDAO.GRUPO_TODAS),
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
-        BigDecimal saldo = totalReceitas.subtract(gastos);
+        BigDecimal saldo = totalReceitas.subtract(new BigDecimal(quantidadeValorTO.getValor()));
         saldoView.setText(String.format("Saldo R$ %.2f", saldo.doubleValue()));
     }
 

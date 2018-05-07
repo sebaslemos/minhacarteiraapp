@@ -17,7 +17,7 @@
         android:id="@+id/lista_categoria_linha_categoria_descricao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="19sp"
         android:layout_marginLeft="5dp"
         android:textColor="@color/black"
         android:layout_toRightOf="@+id/lista_categoria_linha_categoria_icone"
@@ -27,7 +27,7 @@
         android:id="@+id/lista_categoria_linha_categoria_numero_contas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:layout_alignLeft="@id/lista_categoria_linha_categoria_descricao"
         android:layout_below="@id/lista_categoria_linha_categoria_descricao"/>
 
@@ -35,7 +35,7 @@
         android:id="@+id/lista_categoria_linha_categoria_totalGasto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:layout_alignTop="@id/lista_categoria_linha_categoria_descricao"
         android:layout_alignBottom="@id/lista_categoria_linha_categoria_numero_contas"
         android:layout_alignParentRight="true"

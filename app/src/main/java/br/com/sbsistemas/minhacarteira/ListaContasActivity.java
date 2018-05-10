@@ -2,7 +2,6 @@ package br.com.sbsistemas.minhacarteira;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
@@ -28,6 +27,7 @@ import br.com.sbsistemas.minhacarteira.adapter.ListaContasAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.listeners.CheckPagoListener;
 import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
+import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorPrestacao;
@@ -35,6 +35,7 @@ import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
+import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
@@ -218,8 +219,10 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
         for(Conta conta : contasDaCategoria){
             Prestacao prestacao = controladorPrestacao.getPrestacao(conta,
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
+            Categoria categoria = new ControladorCategoria(this).getCategoria(conta.getCategoria());
+            Grupo grupo = new ControladorGrupo(this).getGrupo(categoria.getIdGrupo());
 
-            ListaContaAdapterTO contaAdapterTO = new ListaContaAdapterTO(conta, prestacao);
+            ListaContaAdapterTO contaAdapterTO = new ListaContaAdapterTO(conta, prestacao, grupo);
             listaContaAdapterTOs.add(contaAdapterTO);
         }
 

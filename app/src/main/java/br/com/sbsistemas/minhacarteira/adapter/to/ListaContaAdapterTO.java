@@ -3,6 +3,7 @@ package br.com.sbsistemas.minhacarteira.adapter.to;
 import android.support.annotation.NonNull;
 
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
+import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 
 /**
@@ -13,10 +14,12 @@ public class ListaContaAdapterTO implements Comparable<ListaContaAdapterTO> {
 
     private Conta conta;
     private Prestacao prestacao;
+    private Grupo grupo;
 
-    public ListaContaAdapterTO(Conta conta, Prestacao prestacao) {
+    public ListaContaAdapterTO(Conta conta, Prestacao prestacao, Grupo grupo) {
         this.conta = conta;
         this.prestacao = prestacao;
+        this.grupo = grupo;
     }
 
     public Conta getConta() {
@@ -42,5 +45,13 @@ public class ListaContaAdapterTO implements Comparable<ListaContaAdapterTO> {
 
         //se as datas forem iguais, a conta com menor ID vem primeiro
         return conta.getId().compareTo(o.getConta().getId());
+    }
+
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
     }
 }

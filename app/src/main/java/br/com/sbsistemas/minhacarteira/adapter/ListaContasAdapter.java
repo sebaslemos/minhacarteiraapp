@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.joda.time.format.DateTimeFormat;
@@ -20,9 +21,12 @@ import java.util.List;
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.listeners.CheckPagoListener;
 import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
+import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
+import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 
+import static br.com.sbsistemas.minhacarteira.dao.GrupoDAO.*;
 
 
 /**
@@ -50,6 +54,7 @@ public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
         public TextView data;
         public TextView valor;
         public CheckBox pago;
+        public ImageView icone;
     }
     @NonNull
     @Override
@@ -64,6 +69,7 @@ public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
             holder.data = (TextView) linha.findViewById(R.id.lista_contas_linha_data);
             holder.valor = (TextView) linha.findViewById(R.id.lista_contas_linha_valor);
             holder.pago = (CheckBox) linha.findViewById(R.id.lista_contas_linha_pago);
+            holder.icone = (ImageView) linha.findViewById(R.id.lista_contas_linha_icone);
 
             linha.setTag(holder);
         } else{
@@ -118,6 +124,31 @@ public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
             linha.setBackgroundColor(Color.parseColor("#3F51B5"));
         } else{
             linha.setBackground(null);
+        }
+
+        Grupo grupo = contaAdapterTO.getGrupo();
+        switch (grupo.getDescricao()){
+            case GRUPO_DIVERSAS:
+                holder.icone.setImageResource(R.drawable.grupo_diversas);
+                break;
+            case GRUPO_LAZER:
+                holder.icone.setImageResource(R.drawable.grupo_lazer);
+                break;
+            case GRUPO_MORADIA:
+                holder.icone.setImageResource(R.drawable.grupo_moradia);
+                break;
+            case GRUPO_EDU_TRAB:
+                holder.icone.setImageResource(R.drawable.grupo_trabalho);
+                break;
+            case GRUPO_SAUDE:
+                holder.icone.setImageResource(R.drawable.grupo_saude);
+                break;
+            case GRUPO_TRANSPORTE:
+                holder.icone.setImageResource(R.drawable.grupo_transporte);
+                break;
+            default:
+                holder.icone.setImageResource(R.drawable.grupo_transporte);
+                break;
         }
 
         return linha;

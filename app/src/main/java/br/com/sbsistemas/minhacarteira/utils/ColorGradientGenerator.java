@@ -68,7 +68,7 @@ public class ColorGradientGenerator {
             return constante + 0.18f;
         }
         if (corInicialRGB.equals(corGrupo.getCorRGB(GrupoDAO.GRUPO_LAZER))){
-            return constante + 0.7f;
+            return constante + 0.3f;
         }
         if (corInicialRGB.equals(corGrupo.getCorRGB(GrupoDAO.GRUPO_MORADIA))){
             return constante + 0.1f;

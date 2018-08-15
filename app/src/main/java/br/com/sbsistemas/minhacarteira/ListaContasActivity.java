@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
@@ -33,6 +35,7 @@ import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorPrestacao;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
+import br.com.sbsistemas.minhacarteira.helpers.GraficoContasHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
@@ -51,6 +54,8 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
     private TextView mesAnoTextView;
     private TextView totalReceitasView;
     private TextView saldoView;
+
+    private GraficoContasHelper graficohelper;
 
 
     @Override
@@ -204,6 +209,11 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
         atualizaData();
         carregalistaDeContas();
         atualizaReceitasESaldo();
+        atualizaGrafico();
+    }
+
+    private void atualizaGrafico() {
+        graficohelper.atualizaGrafico(dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
     }
 
     private void atualizaData() {
@@ -244,6 +254,8 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
         mesAnoTextView.setText(LocalDateUtils.getMesAno(dataSelecionada));
         totalReceitasView = (TextView) findViewById(R.id.lista_contas_recebido);
         saldoView = (TextView) findViewById(R.id.lista_contas_saldo);
+
+        graficohelper = new GraficoContasHelper(this, categoriaSelecionada);
     }
 
     @Override

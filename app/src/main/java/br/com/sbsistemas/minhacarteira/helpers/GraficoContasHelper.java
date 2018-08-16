@@ -1,6 +1,7 @@
 package br.com.sbsistemas.minhacarteira.helpers;
 
 import android.app.Activity;
+import android.graphics.Color;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -10,6 +11,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import org.joda.time.LocalDate;
 
@@ -20,7 +23,11 @@ import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
+import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
+import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
+import br.com.sbsistemas.minhacarteira.modelo.Grupo;
+import br.com.sbsistemas.minhacarteira.utils.CorGrupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
 import static br.com.sbsistemas.minhacarteira.R.id.lista_contas_grafico;
@@ -60,25 +67,51 @@ public class GraficoContasHelper {
         }
         Collections.sort(entries, new EntryYComparator<Entry>());
 
-        LineDataSet dataSet = new LineDataSet(entries, "Gastos");
+        Grupo grupo;
+        if(categoria != null)
+                grupo = new ControladorGrupo(activity).getGrupo(categoria.getIdGrupo());
+        else{
+            grupo = new Grupo();
+            grupo.setDescricao(GrupoDAO.GRUPO_TODAS);
+        }
+        LineDataSet dataSet = new LineDataSet(entries, criaLabel(grupo));
         dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         dataSet.setDrawFilled(true);
         dataSet.setDrawValues(true);
+        dataSet.setValueFormatter(new CenterValuesFormatter());
+        dataSet.setFillColor(criaCor(grupo));
+        dataSet.setColor(criaCor(grupo));
+        dataSet.setCircleColor(criaCor(grupo));
 
         grafico.setData(new LineData(dataSet));
 
         XAxis xAxis = grafico.getXAxis();
         xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false);
         xAxis.setValueFormatter(new XvaluesFormatter(meses));
 
         YAxis yAxis = grafico.getAxisLeft();
         yAxis.setValueFormatter(new YValuesFormatter());
+        yAxis.setDrawGridLines(false);
         YAxis axisRight = grafico.getAxisRight();
         axisRight.setValueFormatter(new YValuesFormatter());
+        axisRight.setDrawGridLines(false);
 
         grafico.setDoubleTapToZoomEnabled(false);
+        grafico.setClickable(false);
+        grafico.setDescription(null);
         grafico.animateXY(3000,3000);
         grafico.invalidate();
+    }
+
+    private int criaCor(Grupo grupo) {
+        return new CorGrupo().getCor(grupo.getDescricao());
+    }
+
+    private String criaLabel(Grupo grupo) {
+        if(categoria == null) return "Todas";
+
+        return grupo.getDescricao() + "/" + categoria.getDescricao();
     }
 
     private class EntryYComparator<entry> implements java.util.Comparator<com.github.mikephil.charting.data.Entry> {
@@ -114,10 +147,9 @@ class YValuesFormatter implements IAxisValueFormatter{
     }
 }
 
-class CenterValuesFormatter implements IAxisValueFormatter{
-
+class CenterValuesFormatter implements IValueFormatter{
     @Override
-    public String getFormattedValue(float value, AxisBase axis) {
+    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
         return String.format("R$ %.2f", value);
     }
 }

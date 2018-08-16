@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
@@ -141,12 +140,12 @@ public class GrupoDAO{
                 " inner join " + CategoriaDAO.NOME_TABELA + " ca " +
                         "on ca." + CategoriaDAO.COLUNA_GRUPO_ID + " = g." + COLUNA_ID +
                 " inner join " + ContaDAO.NOME_TABELA + " co " +
-                        "on co." + ContaDAO.COLUNA_CATEGORIA_ID + " = ca." + CategoriaDAO.COLUNA_ID +
+                        "on co." + ContaDAO.CATEGORIA_ID + " = ca." + CategoriaDAO.ID +
                 " inner join " + PrestacoesDAO.NOME_TABELA + " p " +
-                        "on p."+PrestacoesDAO.COLUNA_CONTA_ID+" = co."+ ContaDAO.COLUNA_ID +
-                " and p." + PrestacoesDAO.COLUNA_DATA + " >= ?" +
-                " and p." + PrestacoesDAO.COLUNA_DATA + " <= ?" +
-                " and p." + PrestacoesDAO.COLUNA_ATIVO + " = 1";
+                        "on p."+PrestacoesDAO.CONTA_ID +" = co."+ ContaDAO.ID +
+                " and p." + PrestacoesDAO.DATA + " >= ?" +
+                " and p." + PrestacoesDAO.DATA + " <= ?" +
+                " and p." + PrestacoesDAO.ATIVO + " = 1";
         String[] args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano)};
 
         if(!grupo.getDescricao().equals(GRUPO_TODAS)){

@@ -222,21 +222,20 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
 
     public void carregalistaDeContas(){
         ControladorPrestacao controladorPrestacao = new ControladorPrestacao(this);
-        List<Conta> contasDaCategoria = controladorConta.getContas(categoriaSelecionada,
-                dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
-        List<ListaContaAdapterTO> listaContaAdapterTOs = new ArrayList<>();
-        for(Conta conta : contasDaCategoria){
-            Prestacao prestacao = controladorPrestacao.getPrestacao(conta,
+        List<ListaContaAdapterTO> listaContaAdapterTOs = controladorConta.getContas(categoriaSelecionada,
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-            Categoria categoria = categoriaSelecionada;
-            if(categoria == null)
-                categoria = new ControladorCategoria(this).getCategoria(conta.getCategoria());
-            Grupo grupo = new ControladorGrupo(this).getGrupo(categoria.getIdGrupo());
-
-            ListaContaAdapterTO contaAdapterTO = new ListaContaAdapterTO(conta, prestacao, grupo);
-            listaContaAdapterTOs.add(contaAdapterTO);
-        }
+//        for(Conta conta : contasDaCategoria){
+//            Prestacao prestacao = controladorPrestacao.getPrestacao(conta,
+//                dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
+//            Categoria categoria = categoriaSelecionada;
+//            if(categoria == null)
+//                categoria = new ControladorCategoria(this).getCategoria(conta.getCategoria());
+//            Grupo grupo = new ControladorGrupo(this).getGrupo(categoria.getIdGrupo());
+//
+//            ListaContaAdapterTO contaAdapterTO = new ListaContaAdapterTO(conta, prestacao, grupo);
+//            listaContaAdapterTOs.add(contaAdapterTO);
+//        }
 
         Collections.sort(listaContaAdapterTOs);
         ListaContasAdapter adapter = new ListaContasAdapter(this, listaContaAdapterTOs);

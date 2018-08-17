@@ -105,7 +105,7 @@ public class ContaDAO {
 
         if(categoria == null){
             //lista todas
-            SQL = "SELECT conta.*, prest.ativo, prest.data, prest.prestacao_numero, prest.pago, grupo.descricao as grupo_desc " +
+            SQL = "SELECT conta.*, prest.id as prest_id, prest.ativo, prest.data, prest.prestacao_numero, prest.pago, grupo.descricao as grupo_desc " +
                     " FROM " + NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
                     " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +
                     " INNER JOIN Categoria cat on cat.id = conta.id_categoria " +
@@ -114,7 +114,7 @@ public class ContaDAO {
                     " AND prest." + PrestacoesDAO.DATA + " <= " + "?";
             args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano)};
         } else{
-            SQL = "SELECT conta.*, prest.ativo, prest.data, prest.prestacao_numero, prest.pago, grupo.descricao as grupo_desc " +
+            SQL = "SELECT conta.*, prest.id as prest_id, prest.ativo, prest.data, prest.prestacao_numero, prest.pago, grupo.descricao as grupo_desc " +
                     " FROM " + NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
                     " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +
                     " INNER JOIN Categoria cat on cat.id = conta.id_categoria " +
@@ -164,6 +164,8 @@ public class ContaDAO {
         prestacao.setNumParcela(cursor.getInt(cursor.getColumnIndex(PrestacoesDAO.COLUNA_PRESTACAO_NUMERO)));
         prestacao.setData(LocalDate.parse(data));
         prestacao.setAtivo(ativo == 0 ? false : true);
+        prestacao.setId(cursor.getLong(cursor.getColumnIndex("prest_id")));
+        prestacao.setContaID(conta.getId());
 
         Grupo grupo = new Grupo();
         grupo.setDescricao(cursor.getString(cursor.getColumnIndex("grupo_desc")));

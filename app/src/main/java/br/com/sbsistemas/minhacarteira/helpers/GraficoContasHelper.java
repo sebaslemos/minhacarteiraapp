@@ -100,7 +100,7 @@ public class GraficoContasHelper {
         grafico.setDoubleTapToZoomEnabled(false);
         grafico.setClickable(false);
         grafico.setDescription(null);
-        grafico.animateXY(3000,3000);
+        grafico.animateXY(1000,3000);
         grafico.invalidate();
     }
 

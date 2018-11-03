@@ -4,13 +4,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.Nullable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.exception.CategoriaRepetidaException;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
+import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
 /**
  * Created by sebas on 06/08/2017.
@@ -21,7 +24,7 @@ public class CategoriaDAO {
     //Tabela
     public static final String NOME_TABELA = "Categoria";
     private static final String NOME_INDEX = "id_grupo_idx";
-    public static final String COLUNA_ID = "id";
+    public static final String ID = "id";
     public static final String COLUNA_DESCRICAO = "descricao";
     public static final String COLUNA_GRUPO_ID = "id_grupo";
 
@@ -29,7 +32,7 @@ public class CategoriaDAO {
     //SQLs
     private static final String CREATE_TABLE =
             "CREATE TABLE " + NOME_TABELA +
-            " (" + COLUNA_ID + " INTEGER PRIMARY KEY " +
+            " (" + ID + " INTEGER PRIMARY KEY " +
             ", " + COLUNA_GRUPO_ID + " INTEGER " +
             ", " + COLUNA_DESCRICAO + " TEXT " +
             ", FOREIGN KEY (" + COLUNA_GRUPO_ID + ") REFERENCES " +
@@ -132,7 +135,7 @@ public class CategoriaDAO {
 
     private Categoria cursorToCategoria(Cursor cursor) {
         Categoria categoria = new Categoria();
-        categoria.setId(cursor.getLong(cursor.getColumnIndex(COLUNA_ID)));
+        categoria.setId(cursor.getLong(cursor.getColumnIndex(ID)));
         categoria.setDescricao(cursor.getString(cursor.getColumnIndex(COLUNA_DESCRICAO)));
         categoria.setIdGrupo(cursor.getLong(cursor.getColumnIndex(COLUNA_GRUPO_ID)));
         return categoria;
@@ -148,7 +151,7 @@ public class CategoriaDAO {
     public Categoria getCategoria(Long id) {
         String SQL =
                 "SELECT * FROM " + NOME_TABELA +
-                " WHERE " + COLUNA_ID + " = ?";
+                " WHERE " + ID + " = ?";
         String[] args = {id.toString()};
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -156,5 +159,39 @@ public class CategoriaDAO {
 
         if(cursor.moveToNext()) return cursorToCategoria(cursor);
         return null;
+    }
+
+    public BigDecimal getTotalGastos(@Nullable Categoria categoria, int mes, int ano){
+        String SQL;
+        String[] args;
+
+        if(categoria == null){
+            //lista todas
+            SQL = "SELECT sum(conta." + ContaDAO.VALOR + ") as total " +
+                    " FROM " + ContaDAO.NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
+                    " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +
+                    " WHERE prest." + PrestacoesDAO.DATA + " >= " + "?" +
+                    " AND prest." + PrestacoesDAO.DATA + " <= " + "?" +
+                    " AND prest." + PrestacoesDAO.ATIVO + " = 1";
+            args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano)};
+        } else{
+            SQL = "SELECT sum(conta." + ContaDAO.VALOR + ") as total " +
+                    " FROM " + ContaDAO.NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
+                    " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +
+                    " WHERE prest." + PrestacoesDAO.DATA + " >= " + "?" +
+                    " AND prest." + PrestacoesDAO.DATA + " <= " + "?" +
+                    " AND conta." + ContaDAO.CATEGORIA_ID + " = " + "?" +
+                    " AND prest." + PrestacoesDAO.ATIVO + " = 1"
+                    ;
+            args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano),
+                    categoria.getId().toString()};
+        }
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SQL, args);
+
+        if(cursor.moveToNext())
+            return new BigDecimal(cursor.getFloat(cursor.getColumnIndex("total")));
+        else return new BigDecimal(0);
     }
 }

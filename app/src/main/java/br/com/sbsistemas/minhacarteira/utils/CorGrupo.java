@@ -25,6 +25,7 @@ public class CorGrupo {
         corDoGrupo.put(GrupoDAO.GRUPO_SAUDE, new Integer[]{121, 186, 63});
         corDoGrupo.put(GrupoDAO.GRUPO_EDU_TRAB, new Integer[]{161, 129, 102});
         corDoGrupo.put(GrupoDAO.GRUPO_TRANSPORTE, new Integer[]{0, 152, 220});
+        corDoGrupo.put(GrupoDAO.GRUPO_TODAS, new Integer[]{19, 120, 114});
 
         iconeGrupo.put(GrupoDAO.GRUPO_DIVERSAS, R.drawable.grupo_diversas_peq);
         iconeGrupo.put(GrupoDAO.GRUPO_LAZER, R.drawable.grupo_lazer_peq);

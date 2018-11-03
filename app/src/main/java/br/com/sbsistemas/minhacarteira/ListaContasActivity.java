@@ -2,7 +2,6 @@ package br.com.sbsistemas.minhacarteira;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
@@ -17,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
@@ -28,13 +29,16 @@ import br.com.sbsistemas.minhacarteira.adapter.ListaContasAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.listeners.CheckPagoListener;
 import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
+import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorPrestacao;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
+import br.com.sbsistemas.minhacarteira.helpers.GraficoContasHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
+import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
@@ -50,6 +54,8 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
     private TextView mesAnoTextView;
     private TextView totalReceitasView;
     private TextView saldoView;
+
+    private GraficoContasHelper graficohelper;
 
 
     @Override
@@ -203,6 +209,11 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
         atualizaData();
         carregalistaDeContas();
         atualizaReceitasESaldo();
+        atualizaGrafico();
+    }
+
+    private void atualizaGrafico() {
+        graficohelper.atualizaGrafico(dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
     }
 
     private void atualizaData() {
@@ -211,17 +222,9 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
 
     public void carregalistaDeContas(){
         ControladorPrestacao controladorPrestacao = new ControladorPrestacao(this);
-        List<Conta> contasDaCategoria = controladorConta.getContas(categoriaSelecionada,
-                dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
-        List<ListaContaAdapterTO> listaContaAdapterTOs = new ArrayList<>();
-        for(Conta conta : contasDaCategoria){
-            Prestacao prestacao = controladorPrestacao.getPrestacao(conta,
+        List<ListaContaAdapterTO> listaContaAdapterTOs = controladorConta.getContas(categoriaSelecionada,
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-
-            ListaContaAdapterTO contaAdapterTO = new ListaContaAdapterTO(conta, prestacao);
-            listaContaAdapterTOs.add(contaAdapterTO);
-        }
 
         Collections.sort(listaContaAdapterTOs);
         ListaContasAdapter adapter = new ListaContasAdapter(this, listaContaAdapterTOs);
@@ -239,6 +242,8 @@ public class ListaContasActivity extends AppCompatActivity implements CheckPagoL
         mesAnoTextView.setText(LocalDateUtils.getMesAno(dataSelecionada));
         totalReceitasView = (TextView) findViewById(R.id.lista_contas_recebido);
         saldoView = (TextView) findViewById(R.id.lista_contas_saldo);
+
+        graficohelper = new GraficoContasHelper(this, categoriaSelecionada);
     }
 
     @Override

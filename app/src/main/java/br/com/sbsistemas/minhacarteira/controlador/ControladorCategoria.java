@@ -62,16 +62,7 @@ public class ControladorCategoria {
      * @return
      */
     public BigDecimal getTotalGastosCategoria(Categoria categoria, int mes, int ano){
-        List<Conta> contas = new ControladorConta(context).getContas(categoria, mes, ano);
-
-        ControladorPrestacao controladorPrestacao = new ControladorPrestacao(context);
-        BigDecimal total = new BigDecimal(0);
-        for(Conta conta : contas){
-            Prestacao prestacao = controladorPrestacao.getPrestacao(conta, mes, ano);
-            if(prestacao.isAtivo()) total = total.add(conta.getValor());
-        }
-
-        return total;
+        return new CategoriaDAO(context).getTotalGastos(categoria, mes, ano);
     }
 
     public void criarCategoria(Categoria categoria){

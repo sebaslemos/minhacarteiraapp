@@ -78,4 +78,16 @@ public class LocalDateUtils {
         ano = ano - 2000;
         return MESES_ABREVIADOS[mes] + "/" + ano;
     }
+
+    public static LocalDate getLocalDate(int mes, int ano){
+        return new LocalDate(ano, mes, 01);
+    }
+
+    public static LocalDate mesAnterior(LocalDate data){
+        return  data.minusMonths(1);
+    }
+
+    public static LocalDate mesPosterior(LocalDate data){
+        return data.plusMonths(1);
+    }
 }

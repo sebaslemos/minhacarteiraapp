@@ -3,13 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/lista_contas_linha_icone"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
+        android:foregroundGravity="center"
+        android:layout_centerInParent="true" />
+
     <TextView
         android:id="@+id/lista_contas_linha_descricao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/lista_contas_linha_valor"
-        android:text="Bar do Cuscuz"
-        android:textSize="20sp"
+        android:layout_toRightOf="@id/lista_contas_linha_icone"
+        android:textSize="19sp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:textColor="@color/black"
@@ -21,8 +29,7 @@
         android:id="@+id/lista_contas_linha_valor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="R$ 200,00"
-        android:textSize="17sp"
+        android:textSize="16sp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
        android:textColor="@color/black"/>
@@ -45,11 +52,9 @@
         android:id="@+id/lista_contas_linha_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="[27/08/2017]"
-        android:layout_alignBottom="@id/lista_contas_linha_pago"
-        android:layout_toLeftOf="@id/lista_contas_linha_valor"
-        android:layout_below="@id/lista_contas_linha_descricao"
+        android:textSize="12sp"
         android:layout_alignLeft="@id/lista_contas_linha_descricao"
+        android:layout_below="@id/lista_contas_linha_descricao"
         android:gravity="left|center"/>
 
 

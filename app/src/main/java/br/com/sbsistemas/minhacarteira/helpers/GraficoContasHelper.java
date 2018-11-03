@@ -53,8 +53,8 @@ public class GraficoContasHelper {
         ControladorCategoria ctrl = new ControladorCategoria(this.activity);
 
         List<Entry> entries = new ArrayList<>();
-        String[] meses = new String[8];
-        for(int i = 7; i >= 0; i--){
+        String[] meses = new String[9];
+        for(int i = 8; i >= 0; i--){
             BigDecimal totalGastosCategoria = ctrl.
                     getTotalGastosCategoria(this.categoria, date.getMonthOfYear(), date.getYear());
 

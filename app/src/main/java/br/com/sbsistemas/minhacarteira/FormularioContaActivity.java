@@ -89,11 +89,14 @@ public class FormularioContaActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Categoria categoria = (Categoria) data.getExtras().getSerializable("CategoriaClicada");
-        categoriaText.setText(categoria.getDescricao());
 
-        ControladorGrupo controladorGrupo = new ControladorGrupo(this);
-        Grupo grupo = controladorGrupo.getGrupo(categoria.getIdGrupo());
-        grupoText.setText(grupo.getDescricao());
+        //nenhuma categoria selecioanda
+        if(data != null) {
+            Categoria categoria = (Categoria) data.getExtras().getSerializable("CategoriaClicada");
+            categoriaText.setText(categoria.getDescricao());
+            ControladorGrupo controladorGrupo = new ControladorGrupo(this);
+            Grupo grupo = controladorGrupo.getGrupo(categoria.getIdGrupo());
+            grupoText.setText(grupo.getDescricao());
+        }
     }
 }

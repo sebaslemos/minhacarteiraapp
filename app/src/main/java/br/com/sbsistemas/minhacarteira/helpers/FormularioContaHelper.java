@@ -52,6 +52,7 @@ public class FormularioContaHelper {
 
     public Conta pegaConta(){
         Grupo grupoSelecionado = controladorGrupo.getGrupo(grupo.getText().toString());
+        if(grupoSelecionado == null) throw new IllegalArgumentException("Nenhum grupo ou categoria selecioando");
         Categoria categoriaSelecionada = controladorCategoria.getCategoria(categoria.getText().toString(), grupoSelecionado);
         Conta conta = new Conta();
         conta.setCategoria(categoriaSelecionada.getId());

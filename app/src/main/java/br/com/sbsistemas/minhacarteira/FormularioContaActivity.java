@@ -48,9 +48,9 @@ public class FormularioContaActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //só item de confirmar por enquanto
-        Conta conta = helper.pegaConta();
         ControladorConta controladorConta = new ControladorConta(this);
         try{
+            Conta conta = helper.pegaConta();
             controladorConta.criarConta(conta, helper.getPago(), helper.getData(), helper.getAtiva());
             finish();
             Toast.makeText(this, "Conta " + conta.getDescricao() + " adicionada com sucesso.", Toast.LENGTH_LONG).show();
@@ -89,7 +89,6 @@ public class FormularioContaActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         //nenhuma categoria selecioanda
         if(data != null) {
             Categoria categoria = (Categoria) data.getExtras().getSerializable("CategoriaClicada");

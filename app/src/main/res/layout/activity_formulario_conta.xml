@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:hint="Descrição da Conta"
         android:layout_weight="1"
-        android:inputType="textCapSentences"/>
+        android:inputType="textCapSentences"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -41,9 +41,9 @@ public class FormularioReceiraActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ControladorReceitas controladorReceitas = new ControladorReceitas(this);
-        Receita receita = helper.pegaReceitaDoFormulario();
         try {
+            ControladorReceitas controladorReceitas = new ControladorReceitas(this);
+            Receita receita = helper.pegaReceitaDoFormulario();
             controladorReceitas.adicionarReceita(receita);
             Toast.makeText(this, "Receita adicionada com sucesso", Toast.LENGTH_LONG).show();
             finish();

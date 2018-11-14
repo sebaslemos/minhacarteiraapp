@@ -26,6 +26,7 @@ import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 public class GrupoAdapter extends ArrayAdapter<GrupoAdapterTO>{
 
     private final Activity context;
+
     private GrupoAdapterTO[] grupos;
 
     public GrupoAdapter(@NonNull Activity context, @NonNull GrupoAdapterTO[] grupos) {
@@ -94,4 +95,7 @@ public class GrupoAdapter extends ArrayAdapter<GrupoAdapterTO>{
         return linha;
     }
 
+    public GrupoAdapterTO[] getGrupos() {
+        return grupos;
+    }
 }

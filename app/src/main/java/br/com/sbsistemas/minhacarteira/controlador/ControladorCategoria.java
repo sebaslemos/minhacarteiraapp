@@ -65,7 +65,7 @@ public class ControladorCategoria {
         return new CategoriaDAO(context).getTotalGastos(categoria, mes, ano);
     }
 
-    public void criarCategoria(Categoria categoria){
+    public long criarCategoria(Categoria categoria){
         if(categoria.getDescricao() == null || categoria.getDescricao().equals(""))
             throw new IllegalArgumentException("A descrição da categoria não pode ser vazia.");
 
@@ -76,8 +76,10 @@ public class ControladorCategoria {
                     + " no grupo.");
         }
 
-        catDAO.inserir(categoria);
+        long id = catDAO.inserir(categoria);
         catDAO.close();
+
+        return id;
     }
 
     /**
@@ -168,4 +170,5 @@ public class ControladorCategoria {
 
         return new BigDecimal(0);
     }
+
 }

@@ -40,7 +40,7 @@ public class ControladorConta {
         return  contas;
     }
 
-    public Long criarConta(Conta conta, boolean pago, LocalDate dataConta, boolean ativo){
+    public long criarConta(Conta conta, boolean pago, LocalDate dataConta, boolean ativo){
         validaDados(conta, dataConta);
 
         ContaDAO cDAO = new ContaDAO(context);

@@ -1,7 +1,6 @@
 package br.com.sbsistemas.minhacarteira.helpers;
 
 import android.app.Activity;
-import android.graphics.Color;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -20,8 +19,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
-import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
@@ -34,6 +33,7 @@ import static br.com.sbsistemas.minhacarteira.R.id.lista_contas_grafico;
 
 /**
  * Created by sebas on 14/08/2018.
+ *
  */
 
 public class GraficoContasHelper {
@@ -58,8 +58,7 @@ public class GraficoContasHelper {
             BigDecimal totalGastosCategoria = ctrl.
                     getTotalGastosCategoria(this.categoria, date.getMonthOfYear(), date.getYear());
 
-            float pos= i;
-            Entry entry = new Entry(pos, totalGastosCategoria.floatValue());
+            Entry entry = new Entry(i, totalGastosCategoria.floatValue());
             entries.add(entry);
             meses[i] = LocalDateUtils.getMesAnoAbreviado(date);
 
@@ -123,33 +122,33 @@ public class GraficoContasHelper {
             return 0;
         }
     }
-}
 
-class XvaluesFormatter implements IAxisValueFormatter{
+    private class XvaluesFormatter implements IAxisValueFormatter{
 
-    private String[] meses;
+        private String[] meses;
 
-    public XvaluesFormatter(String[] meses){
-        this.meses = meses;
+        protected XvaluesFormatter(String[] meses){
+            this.meses = meses;
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            return meses[(int) value];
+        }
     }
 
-    @Override
-    public String getFormattedValue(float value, AxisBase axis) {
-        return meses[(int) value];
+    private class YValuesFormatter implements IAxisValueFormatter{
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            return "";
+        }
     }
-}
 
-class YValuesFormatter implements IAxisValueFormatter{
-
-    @Override
-    public String getFormattedValue(float value, AxisBase axis) {
-        return "";
-    }
-}
-
-class CenterValuesFormatter implements IValueFormatter{
-    @Override
-    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-        return String.format("R$ %.2f", value);
+    private class CenterValuesFormatter implements IValueFormatter{
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            return String.format(Locale.US, "R$ %.2f", value);
+        }
     }
 }

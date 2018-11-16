@@ -3,6 +3,7 @@ package br.com.sbsistemas.minhacarteira.helpers;
 import android.app.Activity;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -78,17 +79,20 @@ public class GraficoCategoriaHelper {
         pieDataSet.setValueTextSize(12);
         pieDataSet.setColors(cores);
         pieDataSet.setDrawValues(true);
-        pieDataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                String percentagemSemCasas = String.format("%.0f", value);
-                return percentagemSemCasas + "%";
-            }
-        });
+        pieDataSet.setValueFormatter(new CategoriaYValueFormatter());
 
         PieData pieData = new PieData(pieDataSet);
         graficoCategorias.setData(pieData);
         graficoCategorias.invalidate();
+    }
+
+    class CategoriaYValueFormatter implements IValueFormatter {
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            String percentagemSemCasas = String.format("%.0f", value);
+            return percentagemSemCasas + "%";
+        }
     }
 
 }

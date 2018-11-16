@@ -1,32 +1,26 @@
 package br.com.sbsistemas.minhacarteira.helpers;
 
-import android.app.Activity;
-
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import br.com.sbsistemas.minhacarteira.ListaCategoriasActivity;
 import br.com.sbsistemas.minhacarteira.R;
-import br.com.sbsistemas.minhacarteira.adapter.ListaCategoriaAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.to.CategoriaAdapterTO;
-import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
-import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 /**
  * Created by sebas on 14/11/2018.
+ *
  */
 
 public class GraficoCategoriaHelper {
@@ -86,11 +80,11 @@ public class GraficoCategoriaHelper {
         graficoCategorias.invalidate();
     }
 
-    class CategoriaYValueFormatter implements IValueFormatter {
+    private class CategoriaYValueFormatter implements IValueFormatter {
 
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            String percentagemSemCasas = String.format("%.0f", value);
+            String percentagemSemCasas = String.format(Locale.US, "%.0f", value);
             return percentagemSemCasas + "%";
         }
     }

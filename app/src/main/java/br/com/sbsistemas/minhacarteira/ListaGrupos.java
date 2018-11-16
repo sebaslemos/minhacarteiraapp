@@ -39,6 +39,7 @@ import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
+import br.com.sbsistemas.minhacarteira.helpers.GraficoGruposHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.utils.CorGrupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
@@ -47,7 +48,7 @@ public class ListaGrupos extends AppCompatActivity {
 
     private ListView listaGrupos;
     private TextView mesAnoText;
-    private BarChart graficoGrupos;
+    private GraficoGruposHelper graficoHelper;
 
     private LocalDate dataSelecionada;
     private TextView totalReceitasView;
@@ -92,29 +93,8 @@ public class ListaGrupos extends AppCompatActivity {
     }
 
     private void atualizaGrafico() {
-        BarData data = new BarData();
-
-        List<BarEntry> entries = new ArrayList<>();
-        int numGrupos = listaGrupos.getAdapter().getCount();
-        int[] colors = new int[numGrupos - 1];
-        CorGrupo corGrupo = new CorGrupo();
-        for(int i = 0; i < numGrupos; i++){
-            GrupoAdapterTO grupoAdapterTO = (GrupoAdapterTO) listaGrupos.getItemAtPosition(i);
-
-            if(!grupoAdapterTO.getGrupo().getDescricao().equals(GrupoDAO.GRUPO_TODAS)){
-                BarEntry barEntry = new BarEntry(i, grupoAdapterTO.getTotalGastos().floatValue());
-                barEntry.setIcon(getResources().getDrawable(corGrupo.
-                        getIcone(grupoAdapterTO.getGrupo().getDescricao()), null));
-                entries.add(barEntry);
-                colors[i - 1] = corGrupo.getCor(grupoAdapterTO.getGrupo().getDescricao());
-            }
-        }
-        BarDataSet set = new BarDataSet(entries, "");
-        set.setColors(colors);
-        data.addDataSet(set);
-
-        graficoGrupos.setData(data);
-        graficoGrupos.invalidate();
+        GrupoAdapter adapter = (GrupoAdapter) listaGrupos.getAdapter();
+        graficoHelper.atualizaGrafico(adapter.getGrupos());
     }
 
     @Override
@@ -225,26 +205,7 @@ public class ListaGrupos extends AppCompatActivity {
         mesAnoText.setText(new LocalDateUtils(null).getMesAno(dataSelecionada));
         saldoView = (TextView) findViewById(R.id.lista_grupos_saldo);
         totalReceitasView = (TextView) findViewById(R.id.lista_grupos_recebido);
-
-        graficoGrupos = (BarChart) findViewById(R.id.lista_grupos_grafico);
-
-        YAxis yAxisLeft = graficoGrupos.getAxisLeft();
-        yAxisLeft.setDrawGridLines(false);
-        yAxisLeft.setDrawAxisLine(false);
-        yAxisLeft.setEnabled(true);
-
-        YAxis yAxisRight = graficoGrupos.getAxisRight();
-        yAxisRight.setDrawGridLines(false);
-        yAxisRight.setDrawAxisLine(false);
-        yAxisRight.setEnabled(false);
-
-        XAxis xAxis = graficoGrupos.getXAxis();
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawLabels(false);
-
-        graficoGrupos.setFitBars(true);
-        graficoGrupos.getLegend().setEnabled(false);
+        graficoHelper = new GraficoGruposHelper(this);
     }
     
     

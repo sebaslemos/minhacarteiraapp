@@ -5,20 +5,19 @@ import android.support.annotation.NonNull;
 import java.math.BigDecimal;
 
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
-import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 /**
  * Created by sebas on 31/08/2017.
  */
 
-public class ListaCategoriaAdapterTO implements Comparable<ListaCategoriaAdapterTO>{
+public class CategoriaAdapterTO implements Comparable<CategoriaAdapterTO>{
 
     private Categoria categoria;
     private int totalContas;
     private BigDecimal totalGastos;
     private int backgroundColor;
 
-    public ListaCategoriaAdapterTO(Categoria categoria, int totalContas, BigDecimal totalGastos){
+    public CategoriaAdapterTO(Categoria categoria, int totalContas, BigDecimal totalGastos){
         this.categoria = categoria;
         this.totalContas = totalContas;
         this.totalGastos = totalGastos;
@@ -49,7 +48,7 @@ public class ListaCategoriaAdapterTO implements Comparable<ListaCategoriaAdapter
     }
 
     @Override
-    public int compareTo(@NonNull ListaCategoriaAdapterTO o) {
+    public int compareTo(@NonNull CategoriaAdapterTO o) {
         int comparacaoValor = totalGastos.compareTo(o.getTotalGastos());
         if(comparacaoValor != 0) return comparacaoValor;
 

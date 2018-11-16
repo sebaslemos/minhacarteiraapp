@@ -9,12 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -29,17 +28,17 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Formatter;
 import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.adapter.ListaCategoriaAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaCategoriaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.CategoriaAdapterTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
+import br.com.sbsistemas.minhacarteira.helpers.GraficoCategoriaHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.utils.ColorGradientGenerator;
@@ -54,7 +53,7 @@ import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_m
 import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_titulo;
 import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_grafico;
 
-public class ListaCategoriasActivity extends AppCompatActivity {
+public class ListaCategoriasActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
 
     private Grupo grupoSelecionado;
@@ -65,7 +64,7 @@ public class ListaCategoriasActivity extends AppCompatActivity {
     private TextView totalReceitasView;
     private TextView saldoView;
 
-    private PieChart graficoCategorias;
+    private GraficoCategoriaHelper graficoCategoriasHelper;
     private TextView tituloEstatistica;
     private TextView valorAtualEstatistica;
     private TextView valorMesAnteriorEstatistica;
@@ -88,8 +87,8 @@ public class ListaCategoriasActivity extends AppCompatActivity {
         listaCategorias.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListaCategoriaAdapterTO categoriaTOClicada =
-                        (ListaCategoriaAdapterTO) listaCategorias.getItemAtPosition(position);
+                CategoriaAdapterTO categoriaTOClicada =
+                        (CategoriaAdapterTO) listaCategorias.getItemAtPosition(position);
                 Categoria categoria = categoriaTOClicada.getCategoria();
 
                 Intent intent = new Intent(ListaCategoriasActivity.this, ListaContasActivity.class);
@@ -99,21 +98,6 @@ public class ListaCategoriasActivity extends AppCompatActivity {
             }
         });
 
-        graficoCategorias.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                Long idCategoria = (Long) e.getData();
-                Categoria categoriaSelecionada =
-                        new ControladorCategoria(ListaCategoriasActivity.this).getCategoria(idCategoria);
-
-                atualizaEstatisticas(categoriaSelecionada);
-            }
-
-            @Override
-            public void onNothingSelected() {
-                atualizaEstatisticas(null);
-            }
-        });
     }
 
     @Override
@@ -186,7 +170,7 @@ public class ListaCategoriasActivity extends AppCompatActivity {
      * Ultimos oito meses
      * @param categoria
      */
-    private void atualizaEstatisticas(Categoria categoria) {
+    public void atualizaEstatisticas(Categoria categoria) {
 
         BigDecimal totalAtual = new BigDecimal(0);
         BigDecimal totalMesAnterior = new BigDecimal(0);
@@ -229,51 +213,8 @@ public class ListaCategoriasActivity extends AppCompatActivity {
     }
 
     private void atualizaGrafico() {
-        graficoCategorias.setRotationEnabled(true);
-        graficoCategorias.setHoleRadius(50f);
-        graficoCategorias.setTransparentCircleAlpha(0);
-        graficoCategorias.setCenterText(grupoSelecionado.getDescricao());
-        graficoCategorias.setCenterTextSize(13);
-        graficoCategorias.getDescription().setEnabled(false);
-        graficoCategorias.getLegend().setEnabled(false);
-        graficoCategorias.setDrawEntryLabels(false);
-        graficoCategorias.setUsePercentValues(true);
-
-        ArrayList<PieEntry> yEntries = new ArrayList<>();
-        ArrayList<Integer> cores = new ArrayList<>();
-
-        //valores do grafico
-        ListaCategoriaAdapter adapter = (ListaCategoriaAdapter) listaCategorias.getAdapter();
-        for(int i = 0; i < adapter.getCount(); i++){
-            ListaCategoriaAdapterTO categoriaTO = adapter.getItem(i);
-
-            if(categoriaTO.getTotalGastos().equals(new BigDecimal(0))) continue;
-
-            PieEntry entry = new PieEntry(categoriaTO.getTotalGastos().floatValue(),
-                    categoriaTO.getCategoria().getId());
-
-            yEntries.add(entry);
-            cores.add(categoriaTO.getBackgroundColor());
-        }
-
-        PieDataSet pieDataSet = new PieDataSet(yEntries, grupoSelecionado.getDescricao());
-        pieDataSet.setSliceSpace(2);
-        pieDataSet.setValueTextSize(12);
-        pieDataSet.setColors(cores);
-        pieDataSet.setDrawValues(true);
-        pieDataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                String percentagemSemCasas = String.format("%.0f", value);
-                return percentagemSemCasas + "%";
-            }
-        });
-
-
-        //create pie data object
-        PieData pieData = new PieData(pieDataSet);
-        graficoCategorias.setData(pieData);
-        graficoCategorias.invalidate();
+        ListaCategoriaAdapter listaCategoriaAdapter = (ListaCategoriaAdapter) listaCategorias.getAdapter();
+        graficoCategoriasHelper.atualizaGrafico(listaCategoriaAdapter.getCategoriasAdapterTO());
     }
 
     private void atualizaData() {
@@ -302,13 +243,13 @@ public class ListaCategoriasActivity extends AppCompatActivity {
         List<Categoria> categoriasComContas = controladorCategoria.getCategoriasComContas(
                 grupoSelecionado, dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
-        List<ListaCategoriaAdapterTO> categoriasTO = new ArrayList<>();
+        List<CategoriaAdapterTO> categoriasTO = new ArrayList<>();
         for(Categoria categoria : categoriasComContas){
             int totalContas = controladorCategoria.getTotalDeContas(categoria,
                     dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
             BigDecimal totalGastosCategoria = controladorCategoria.getTotalGastosCategoria(categoria,
                     dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-            ListaCategoriaAdapterTO categoriaTO = new ListaCategoriaAdapterTO(categoria,
+            CategoriaAdapterTO categoriaTO = new CategoriaAdapterTO(categoria,
                     totalContas, totalGastosCategoria);
             categoriasTO.add(categoriaTO);
         }
@@ -340,12 +281,33 @@ public class ListaCategoriasActivity extends AppCompatActivity {
         totalReceitasView = (TextView) findViewById(R.id.lista_categoria_recebido);
         saldoView = (TextView) findViewById(R.id.lista_categoria_saldo);
 
-        graficoCategorias = (PieChart) findViewById(lista_categoria_grafico);
+        graficoCategoriasHelper = new GraficoCategoriaHelper(this, grupoSelecionado);
+
         tituloEstatistica = (TextView) findViewById(lista_categoria_estatistica_titulo);
         valorAtualEstatistica = (TextView) findViewById(lista_categoria_estatistica_mes_atual);
         menorValorEstatistica = (TextView) findViewById(lista_categoria_estatistica_menor);
         maiorValorEstatistica = (TextView) findViewById(lista_categoria_estatistica_maior);
         mediaEstatistica = (TextView) findViewById(lista_categoria_estatistica_media);
         valorMesAnteriorEstatistica = (TextView) findViewById(lista_categoria_estatistica_mes_anterior);
+    }
+
+    /**
+     * Listener de clique no gráfico
+     */
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Long idCategoria = (Long) e.getData();
+        Categoria categoriaSelecionada =
+                new ControladorCategoria(this).getCategoria(idCategoria);
+
+        atualizaEstatisticas(categoriaSelecionada);
+    }
+
+    /**
+     * Listener de clique no gráfico
+     */
+    @Override
+    public void onNothingSelected() {
+        atualizaEstatisticas(null);
     }
 }

@@ -24,6 +24,8 @@ import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -33,11 +35,15 @@ import static org.junit.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class CategoriaTest {
 
-    private CategoriaDAO dao;
+    private ControladorCategoria ctrlCat;
+    private Long ID_CAT_COMBUSTIVEL;
+    private Long ID_CAT_SAIDAS;
 
     @Before
     public void configuraTestes(){
-        dao = new CategoriaDAO(InstrumentationRegistry.getTargetContext());
+        ctrlCat = new ControladorCategoria(InstrumentationRegistry.getTargetContext());
+
+        CategoriaDAO dao = new CategoriaDAO(InstrumentationRegistry.getTargetContext());
         dao.limpaBanco();
         ContaDAO contaDAO = new ContaDAO(InstrumentationRegistry.getTargetContext());
         contaDAO.limpaBanco();
@@ -50,17 +56,17 @@ public class CategoriaTest {
         Categoria combustivel = new Categoria();
         combustivel.setDescricao("Combustível");
         combustivel.setIdGrupo(new Long(4));//transporte
-        dao.inserir(combustivel);
+        ID_CAT_COMBUSTIVEL = dao.inserir(combustivel);
 
         Categoria saidas = new Categoria();
         saidas.setDescricao("Saídas");
         saidas.setIdGrupo(new Long(0));
-        dao.inserir(saidas);
+        ID_CAT_SAIDAS = dao.inserir(saidas);
+        dao.close();
     }
 
     @After
     public void finaliza(){
-        dao.close();
     }
 
     @Test
@@ -69,13 +75,13 @@ public class CategoriaTest {
         todas.setDescricao(GrupoDAO.GRUPO_TODAS);
         todas.setId(Long.valueOf(0));
         //pre teste
-        List<Categoria> todasCategorias = dao.getCategorias(todas);
+        List<Categoria> todasCategorias = ctrlCat.getCategorias(todas);
         assertEquals(2, todasCategorias.size());
 
         Grupo transporte = new Grupo();
         transporte.setDescricao(GrupoDAO.GRUPO_TRANSPORTE);
         transporte.setId(Long.valueOf(4));
-        List<Categoria> categorias = dao.getCategorias(transporte);
+        List<Categoria> categorias = ctrlCat.getCategorias(transporte);
         assertEquals(1, categorias.size());
         assertEquals("Combustível", categorias.get(0).getDescricao());
     }
@@ -87,7 +93,7 @@ public class CategoriaTest {
         categoriaRepetida.setIdGrupo(Long.valueOf(4));
 
         try{
-            dao.inserir(categoriaRepetida);
+            ctrlCat.criarCategoria(categoriaRepetida);
             fail("Deveria Lançar exceção por repetir categoria");
         } catch (CategoriaRepetidaException e){
             assertEquals("Já existe a categoria " + categoriaRepetida.getDescricao() + " no grupo.",
@@ -102,7 +108,7 @@ public class CategoriaTest {
         categoria.setIdGrupo(Long.valueOf(0));
 
         try{
-            dao.inserir(categoria);
+            ctrlCat.criarCategoria(categoria);
         } catch (CategoriaRepetidaException e){
             fail("Não deveria lançar exceção, pois só a descrição é repetida.");
         }
@@ -110,11 +116,14 @@ public class CategoriaTest {
 
     @Test
     public void testaBuscaPorDescricaoEGrupo(){
-        boolean existe = dao.existe("Combustível", Long.valueOf(4));
-        boolean naoExiste = dao.existe("Combustível", Long.valueOf(0));
+        Grupo g = new Grupo();
+        g.setId(Long.valueOf(4));
+        Categoria existe = ctrlCat.getCategoria("Combustível", g);
+        g.setId(Long.valueOf(0));
+        Categoria naoExiste = ctrlCat.getCategoria("Combustível", g);
 
-        assertTrue(existe);
-        assertFalse(naoExiste);
+        assertNotNull(existe);
+        assertNull(naoExiste);
 
     }
 
@@ -136,7 +145,7 @@ public class CategoriaTest {
         conta.setDescricao("conta1");
         conta.setNumeroDePrestacoes(3);
         conta.setValor(new BigDecimal(100.56));
-        conta.setCategoria(Long.valueOf(0));
+        conta.setCategoria(ID_CAT_COMBUSTIVEL);
 
         ControladorConta controlConta = new ControladorConta(InstrumentationRegistry.getTargetContext());
         controlConta.criarConta(conta, false, new LocalDate(2017, 01, 30), true);
@@ -145,7 +154,7 @@ public class CategoriaTest {
         conta2.setDescricao("conta2");
         conta2.setNumeroDePrestacoes(2);
         conta2.setValor(new BigDecimal(0.54));
-        conta2.setCategoria(Long.valueOf(0));
+        conta2.setCategoria(ID_CAT_COMBUSTIVEL);
 
         controlConta.criarConta(conta2, false, new LocalDate(2017, 02, 28), true);
 
@@ -153,7 +162,7 @@ public class CategoriaTest {
         contaInativa.setDescricao("Inativa");
         contaInativa.setNumeroDePrestacoes(4);
         contaInativa.setValor(new BigDecimal(300.5));
-        contaInativa.setCategoria(Long.valueOf(0));
+        contaInativa.setCategoria(ID_CAT_COMBUSTIVEL);
 
         controlConta.criarConta(contaInativa, false, new LocalDate(2017, 01, 30), false);
 
@@ -161,12 +170,12 @@ public class CategoriaTest {
         contaOutraCategoria.setDescricao("outra catagoria - nao deve contar");
         contaOutraCategoria.setNumeroDePrestacoes(2);
         contaOutraCategoria.setValor(new BigDecimal(300.5));
-        contaOutraCategoria.setCategoria(Long.valueOf(1));
+        contaOutraCategoria.setCategoria(ID_CAT_SAIDAS);
 
         controlConta.criarConta(contaOutraCategoria, false, new LocalDate(2017, 01, 30), true);
 
         Categoria cat1 = new Categoria();
-        cat1.setId(Long.valueOf(0));
+        cat1.setId(ID_CAT_COMBUSTIVEL);
         ControladorCategoria controlCategoria = new ControladorCategoria(InstrumentationRegistry.getTargetContext());
 
         assertEquals(100.56, controlCategoria.getTotalGastosCategoria(cat1, 1, 2017).doubleValue(), 0.0001);
@@ -178,7 +187,7 @@ public class CategoriaTest {
     @Test
     public void testaCalculoTotalContasDaCategoria(){
         /*
-        Testa a adicção de duas contas (uma ativa e outra inativa em uma
+        Testa a adição de duas contas (uma ativa e outra inativa em uma
         categoria, junto com uma conta ativa em outra categoria
 
                   JAN   FEV   MAR  ABR
@@ -193,7 +202,7 @@ public class CategoriaTest {
         conta.setDescricao("conta1");
         conta.setNumeroDePrestacoes(3);
         conta.setValor(new BigDecimal(100.56));
-        conta.setCategoria(Long.valueOf(0));
+        conta.setCategoria(ID_CAT_COMBUSTIVEL);
 
         ControladorConta controlConta = new ControladorConta(InstrumentationRegistry.getTargetContext());
         controlConta.criarConta(conta, false, new LocalDate(2017, 01, 30), true);
@@ -202,7 +211,7 @@ public class CategoriaTest {
         conta2.setDescricao("conta2");
         conta2.setNumeroDePrestacoes(2);
         conta2.setValor(new BigDecimal(0.54));
-        conta2.setCategoria(Long.valueOf(0));
+        conta2.setCategoria(ID_CAT_COMBUSTIVEL);
 
         controlConta.criarConta(conta2, false, new LocalDate(2017, 02, 28), true);
 
@@ -210,7 +219,7 @@ public class CategoriaTest {
         contaInativa.setDescricao("Inativa");
         contaInativa.setNumeroDePrestacoes(4);
         contaInativa.setValor(new BigDecimal(300.5));
-        contaInativa.setCategoria(Long.valueOf(0));
+        contaInativa.setCategoria(ID_CAT_COMBUSTIVEL);
 
         controlConta.criarConta(contaInativa, false, new LocalDate(2017, 01, 30), false);
 
@@ -218,12 +227,12 @@ public class CategoriaTest {
         contaOutraCategoria.setDescricao("outra catagoria - nao deve contar");
         contaOutraCategoria.setNumeroDePrestacoes(2);
         contaOutraCategoria.setValor(new BigDecimal(300.5));
-        contaOutraCategoria.setCategoria(Long.valueOf(1));
+        contaOutraCategoria.setCategoria(ID_CAT_SAIDAS);
 
         controlConta.criarConta(contaOutraCategoria, false, new LocalDate(2017, 01, 30), true);
 
         Categoria cat1 = new Categoria();
-        cat1.setId(Long.valueOf(0));
+        cat1.setId(ID_CAT_COMBUSTIVEL);
         ControladorCategoria controlCategoria = new ControladorCategoria(InstrumentationRegistry.getTargetContext());
 
         assertEquals(2, controlCategoria.getTotalDeContas(cat1, 1, 2017));
@@ -244,7 +253,7 @@ public class CategoriaTest {
         // grupo ja tem uma categora vazia
         Grupo transporte = controladorGrupo.getGrupo(GrupoDAO.GRUPO_SAUDE);
         categoriaComCompras.setIdGrupo(transporte.getId());
-        long idCategoria = dao.inserir(categoriaComCompras);
+        long idCategoria = ctrlCat.criarCategoria(categoriaComCompras);
 
         Conta conta = new Conta();
         conta.setDescricao("conta1");

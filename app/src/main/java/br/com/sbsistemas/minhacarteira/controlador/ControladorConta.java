@@ -40,13 +40,13 @@ public class ControladorConta {
         return  contas;
     }
 
-    public void criarConta(Conta conta, boolean pago, LocalDate dataConta, boolean ativo){
+    public long criarConta(Conta conta, boolean pago, LocalDate dataConta, boolean ativo){
         validaDados(conta, dataConta);
 
         ContaDAO cDAO = new ContaDAO(context);
         PrestacoesDAO pDAO = new PrestacoesDAO(context);
 
-        Long contaId = cDAO.inserir(conta);
+        long contaId = cDAO.inserir(conta);
 
         LocalDate dataPrestacao = dataConta;
         for(int i = 1; i <= conta.getNumeroDePrestacoes(); i++){
@@ -62,6 +62,7 @@ public class ControladorConta {
 
         cDAO.close();
         pDAO.close();
+        return contaId;
     }
 
     private void validaDados(Conta conta, LocalDate dataConta) {

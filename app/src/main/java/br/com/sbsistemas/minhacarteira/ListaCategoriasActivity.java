@@ -2,47 +2,34 @@ package br.com.sbsistemas.minhacarteira;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.adapter.ListaCategoriaAdapter;
-import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.CategoriaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.helpers.GraficoCategoriaHelper;
+import br.com.sbsistemas.minhacarteira.helpers.ListaCategoriasHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
-import br.com.sbsistemas.minhacarteira.utils.ColorGradientGenerator;
-import br.com.sbsistemas.minhacarteira.utils.CorGrupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
 import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_maior;
@@ -51,15 +38,13 @@ import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_m
 import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_mes_anterior;
 import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_mes_atual;
 import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_titulo;
-import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_grafico;
 
-public class ListaCategoriasActivity extends AppCompatActivity implements OnChartValueSelectedListener {
-
+public class ListaCategoriasActivity extends AppCompatActivity implements OnChartValueSelectedListener, AdapterView.OnItemClickListener {
 
     private Grupo grupoSelecionado;
     private LocalDate dataSelecionada;
 
-    private ListView listaCategorias;
+    private ListaCategoriasHelper listaCategoriasHelper;
     private TextView mesAnoTextView;
     private TextView totalReceitasView;
     private TextView saldoView;
@@ -73,31 +58,12 @@ public class ListaCategoriasActivity extends AppCompatActivity implements OnChar
     private TextView mediaEstatistica;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_categorias);
 
         inicializaComponentes();
-        ocnfiguraEventos();
-    }
-
-    private void ocnfiguraEventos() {
-        listaCategorias.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CategoriaAdapterTO categoriaTOClicada =
-                        (CategoriaAdapterTO) listaCategorias.getItemAtPosition(position);
-                Categoria categoria = categoriaTOClicada.getCategoria();
-
-                Intent intent = new Intent(ListaCategoriasActivity.this, ListaContasActivity.class);
-                intent.putExtra("categoria", categoria);
-                intent.putExtra("data", dataSelecionada);
-                startActivity(intent);
-            }
-        });
-
     }
 
     @Override
@@ -159,7 +125,7 @@ public class ListaCategoriasActivity extends AppCompatActivity implements OnChar
     }
 
     public void atualizaTela(){
-        carregaListaDeCategorias();
+        listaCategoriasHelper.carregaListaDeCategorias(grupoSelecionado, dataSelecionada);
         atualizaData();
         atualizaReceitasESaldo();
         atualizaGrafico();
@@ -213,8 +179,7 @@ public class ListaCategoriasActivity extends AppCompatActivity implements OnChar
     }
 
     private void atualizaGrafico() {
-        ListaCategoriaAdapter listaCategoriaAdapter = (ListaCategoriaAdapter) listaCategorias.getAdapter();
-        graficoCategoriasHelper.atualizaGrafico(listaCategoriaAdapter.getCategoriasAdapterTO());
+        graficoCategoriasHelper.atualizaGrafico(listaCategoriasHelper.getCategorias());
     }
 
     private void atualizaData() {
@@ -237,45 +202,12 @@ public class ListaCategoriasActivity extends AppCompatActivity implements OnChar
         saldoView.setText(String.format("Saldo R$ %.2f", saldo.doubleValue()));
     }
 
-    private void carregaListaDeCategorias() {
-        ControladorCategoria controladorCategoria = new ControladorCategoria(this);
-
-        List<Categoria> categoriasComContas = controladorCategoria.getCategoriasComContas(
-                grupoSelecionado, dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-
-        List<CategoriaAdapterTO> categoriasTO = new ArrayList<>();
-        for(Categoria categoria : categoriasComContas){
-            int totalContas = controladorCategoria.getTotalDeContas(categoria,
-                    dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-            BigDecimal totalGastosCategoria = controladorCategoria.getTotalGastosCategoria(categoria,
-                    dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-            CategoriaAdapterTO categoriaTO = new CategoriaAdapterTO(categoria,
-                    totalContas, totalGastosCategoria);
-            categoriasTO.add(categoriaTO);
-        }
-
-        Collections.sort(categoriasTO);
-        Collections.reverse(categoriasTO);
-
-        //cria o gradiente de cores das categorias do grupo
-        ColorGradientGenerator gradiente =
-                new ColorGradientGenerator(new CorGrupo().getCorRGB(grupoSelecionado.getDescricao()),
-                        categoriasComContas.size());
-        int[] cores = gradiente.gerarGradiente();
-        for(int i = 0; i < categoriasTO.size(); i++){
-            categoriasTO.get(i).setBackgroundColor(cores[i]);
-        }
-
-        ListaCategoriaAdapter adapter = new ListaCategoriaAdapter(this, categoriasTO);
-        listaCategorias.setAdapter(adapter);
-    }
-
     private void inicializaComponentes() {
         grupoSelecionado = (Grupo) getIntent().getExtras().get("grupo");
         dataSelecionada = (LocalDate) getIntent().getExtras().get("data");
         if(dataSelecionada == null) dataSelecionada = LocalDate.now();
 
-        listaCategorias = (ListView) findViewById(R.id.lista_categoria_lista);
+        listaCategoriasHelper = new ListaCategoriasHelper(this);
         mesAnoTextView = (TextView) findViewById(R.id.lista_categoria_mes_ano);
         mesAnoTextView.setText(LocalDateUtils.getMesAno(dataSelecionada));
         totalReceitasView = (TextView) findViewById(R.id.lista_categoria_recebido);
@@ -309,5 +241,23 @@ public class ListaCategoriasActivity extends AppCompatActivity implements OnChar
     @Override
     public void onNothingSelected() {
         atualizaEstatisticas(null);
+    }
+
+    /**
+     * Listener de click na lista de categorias
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        CategoriaAdapterTO categoriaTOClicada = listaCategoriasHelper.getCategoriaAtPosition(position);
+        Categoria categoria = categoriaTOClicada.getCategoria();
+
+        Intent intent = new Intent(ListaCategoriasActivity.this, ListaContasActivity.class);
+        intent.putExtra("categoria", categoria);
+        intent.putExtra("data", dataSelecionada);
+        startActivity(intent);
     }
 }

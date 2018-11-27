@@ -44,7 +44,7 @@ public class PrestacaoTest {
 
         LocalDate dataInicio = new LocalDate(2017, 1, 31);
         LocalDate dataPrestacao = dataInicio;
-        for(int i = 1; i <= 3; i++){
+        for(int i = 1; i <= conta.getNumeroDePrestacoes(); i++){
             Prestacao prestacao = new Prestacao();
             prestacao.setAtivo(true);
             prestacao.setNumParcela(i);
@@ -103,5 +103,10 @@ public class PrestacaoTest {
         assertEquals(3, prestacao3.getData().getMonthOfYear());
         assertEquals(3, prestacao3.getNumParcela().intValue());
         assertEquals(false, prestacao3.isPago());
+    }
+
+    @Test
+    public void testaBucarPrestacoesDeUmaConta(){
+
     }
 }

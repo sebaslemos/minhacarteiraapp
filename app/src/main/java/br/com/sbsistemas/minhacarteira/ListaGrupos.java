@@ -3,51 +3,33 @@ package br.com.sbsistemas.minhacarteira;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DrawableUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.adapter.GrupoAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.to.GrupoAdapterTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.helpers.GraficoGruposHelper;
+import br.com.sbsistemas.minhacarteira.helpers.ListaGruposHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
-import br.com.sbsistemas.minhacarteira.utils.CorGrupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
-public class ListaGrupos extends AppCompatActivity {
+public class ListaGrupos extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
-    private ListView listaGrupos;
     private TextView mesAnoText;
+    private ListaGruposHelper listaGruposHelper;
     private GraficoGruposHelper graficoHelper;
 
     private LocalDate dataSelecionada;
@@ -61,29 +43,6 @@ public class ListaGrupos extends AppCompatActivity {
         setContentView(R.layout.activity_lista_grupos);
 
         iniciaComponentes();
-        configuraEventos();
-    }
-
-    private void configuraEventos() {
-        listaGrupos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GrupoAdapterTO grupoTO = (GrupoAdapterTO) listaGrupos.getItemAtPosition(position);
-                Grupo grupo = grupoTO.getGrupo();
-
-                if(grupo.getDescricao().equals(GrupoDAO.GRUPO_TODAS)){
-                    Intent intent = new Intent(ListaGrupos.this, ListaContasActivity.class);
-                    intent.putExtra("data", dataSelecionada);
-                    startActivity(intent);
-                } else{
-                    Intent intent = new Intent(ListaGrupos.this, ListaCategoriasActivity.class);
-                    intent.putExtra("data", dataSelecionada);
-                    intent.putExtra("grupo", grupo);
-                    startActivity(intent);
-                }
-
-            }
-        });
     }
 
     @Override
@@ -93,8 +52,7 @@ public class ListaGrupos extends AppCompatActivity {
     }
 
     private void atualizaGrafico() {
-        GrupoAdapter adapter = (GrupoAdapter) listaGrupos.getAdapter();
-        graficoHelper.atualizaGrafico(adapter.getGrupos());
+        graficoHelper.atualizaGrafico(listaGruposHelper.getGrupos());
     }
 
     @Override
@@ -169,44 +127,44 @@ public class ListaGrupos extends AppCompatActivity {
     }
 
     private void atualizaTela(){
-        carregaListaGrupos();
+        listaGruposHelper.carregaListaGrupos(dataSelecionada);
         atualizaGrafico();
         atualizaReceitasESaldo();
-    }
-
-    private void carregaListaGrupos() {
-        ControladorGrupo controladorGrupo = new ControladorGrupo(this);
-        List<Grupo> grupos = controladorGrupo.getGrupos();
-        List<GrupoAdapterTO> grupoAdapterTOs = new ArrayList<GrupoAdapterTO>();
-
-        for(Grupo grupo : grupos){
-            QuantidadeValorTO quantidadeValorTO =
-                    controladorGrupo.getQuantidadeValor(grupo, dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
-            int totalDeContas = quantidadeValorTO.getQuantidade();
-            BigDecimal totalGastosDoGrupo = new BigDecimal(quantidadeValorTO.getValor());
-            GrupoAdapterTO grupoTO = new GrupoAdapterTO(grupo, totalDeContas, totalGastosDoGrupo);
-
-            grupoAdapterTOs.add(grupoTO);
-        }
-
-        //apresenta os grupos em ordem de maior gasto
-        Collections.sort(grupoAdapterTOs);
-        Collections.reverse(grupoAdapterTOs);
-        GrupoAdapter adapter = new GrupoAdapter(this, grupoAdapterTOs.toArray(new GrupoAdapterTO[grupoAdapterTOs.size()]));
-        listaGrupos.setAdapter(adapter);
     }
 
     private void iniciaComponentes() {
         //configura a data atual
         dataSelecionada = LocalDate.now();
 
-        listaGrupos = (ListView) findViewById(R.id.lista_grupos_lista);
+        listaGruposHelper = new ListaGruposHelper(this);
         mesAnoText = (TextView) findViewById(R.id.lista_grupos_mes_ano);
         mesAnoText.setText(new LocalDateUtils(null).getMesAno(dataSelecionada));
         saldoView = (TextView) findViewById(R.id.lista_grupos_saldo);
         totalReceitasView = (TextView) findViewById(R.id.lista_grupos_recebido);
         graficoHelper = new GraficoGruposHelper(this);
     }
-    
-    
+
+    /**
+     * Listenter de click na lista de grupos
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        GrupoAdapterTO grupoTO = listaGruposHelper.getGrupoTOAtPosition(position);
+        Grupo grupo = grupoTO.getGrupo();
+
+        if(grupo.getDescricao().equals(GrupoDAO.GRUPO_TODAS)){
+            Intent intent = new Intent(ListaGrupos.this, ListaContasActivity.class);
+            intent.putExtra("data", dataSelecionada);
+            startActivity(intent);
+        } else{
+            Intent intent = new Intent(ListaGrupos.this, ListaCategoriasActivity.class);
+            intent.putExtra("data", dataSelecionada);
+            intent.putExtra("grupo", grupo);
+            startActivity(intent);
+        }
+    }
 }

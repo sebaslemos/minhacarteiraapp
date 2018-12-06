@@ -6,14 +6,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
+import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.R;
+import br.com.sbsistemas.minhacarteira.adapter.ListaPrestacaoAdapter;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
+import br.com.sbsistemas.minhacarteira.controlador.ControladorPrestacao;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
+import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 
 /**
  * Created by sebas on 31/10/2017.
@@ -21,26 +24,30 @@ import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 public class EditaContaHelper {
 
+    private Activity context;
     private Conta conta;
 
     private final EditText descricao;
     private final TextView grupo;
     private final TextView categoria;
     private final EditText valor;
-    private final ListView prestacoes;
+    private final ListView prestacoesListView;
 
     private ControladorCategoria controladorCategoria;
     private ControladorGrupo controladorGrupo;
+    private ControladorPrestacao controladorPrestacao;
 
     public EditaContaHelper(Activity context, Conta conta){
         controladorCategoria = new ControladorCategoria(context);
         controladorGrupo = new ControladorGrupo(context);
+        controladorPrestacao = new ControladorPrestacao(context);
 
         descricao = (EditText) context.findViewById(R.id.edita_conta_descricao);
         grupo = (TextView) context.findViewById(R.id.edita_conta_grupo);
         categoria = (TextView) context.findViewById(R.id.edita_conta_categoria);
         valor = (EditText) context.findViewById(R.id.edita_conta_valor);
-        prestacoes = (ListView) context.findViewById(R.id.edita_conta_prestacoes);
+        prestacoesListView = (ListView) context.findViewById(R.id.edita_conta_prestacoes);
+        this.context = context;
 
         this.conta = conta;
         preencheCampos();
@@ -73,7 +80,10 @@ public class EditaContaHelper {
     }
 
     private void prencheLista() {
-        //TODO prestações
+        List<Prestacao> prestacoes = controladorPrestacao.getPrestacoes(conta);
+
+        ListaPrestacaoAdapter adapter = new ListaPrestacaoAdapter(context, prestacoes);
+        prestacoesListView.setAdapter(adapter);
     }
 
 

@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.joda.time.LocalDate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
@@ -108,6 +111,27 @@ public class PrestacoesDAO {
             return cursorToPrestacao(cursor);
         }
         return null;
+    }
+
+    public List<Prestacao> getPrestacoes(Conta conta){
+        String SQL =
+                "SELECT * FROM " + NOME_TABELA +
+                " WHERE " + CONTA_ID + "  = ?";
+        String args[] = {conta.getId().toString()};
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SQL, args);
+
+        return cursorToPrestacoes(cursor);
+    }
+
+    private List<Prestacao> cursorToPrestacoes(Cursor cursor) {
+        List<Prestacao> prestacoes = new ArrayList<Prestacao>();
+
+        while (cursor.moveToNext()){
+            prestacoes.add(cursorToPrestacao(cursor));
+        }
+        return prestacoes;
     }
 
     public void limpaBanco(){

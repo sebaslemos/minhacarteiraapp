@@ -21,6 +21,7 @@ import br.com.sbsistemas.minhacarteira.exception.CategoriaRepetidaException;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
+import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -267,5 +268,52 @@ public class CategoriaTest {
 
         assertEquals(2, controladorCategoria.getCategorias(transporte).size());
         assertEquals(1, controladorCategoria.getCategoriasComContas(transporte, 1, 2017).size());
+    }
+
+    @Test
+    public void testaTotalGastosComUmPrestacaoInativa(){
+                /*
+        Testa a adicção de duas contas (uma ativa e outra inativa em uma
+        categoria, junto com uma conta ativa em outra categoria
+
+                  JAN   FEV   MAR  ABR
+        c1         -     -     -
+        c2               *     -
+        total   100.0  100.0 200.0  0
+         */
+        ControladorConta controlConta = new ControladorConta(InstrumentationRegistry.getTargetContext());
+        PrestacoesDAO prestacoesDAO = new PrestacoesDAO(InstrumentationRegistry.getTargetContext());
+
+        Conta conta = new Conta();
+        conta.setDescricao("conta1");
+        conta.setNumeroDePrestacoes(3);
+        conta.setValor(new BigDecimal(100));
+        conta.setCategoria(ID_CAT_COMBUSTIVEL);
+        controlConta.criarConta(conta, false, new LocalDate(2017, 01, 30), true);
+
+        Conta conta2 = new Conta();
+        conta2.setDescricao("conta2");
+        conta2.setNumeroDePrestacoes(2);
+        conta2.setValor(new BigDecimal(100));
+        conta2.setCategoria(ID_CAT_COMBUSTIVEL);
+        long conta2ID = controlConta.criarConta(conta2, false, new LocalDate(2017, 02, 28), true);
+        conta2.setId(conta2ID);
+        Prestacao prestacaoInativa = prestacoesDAO.getPrestacao(conta2, 02, 2017);
+        prestacaoInativa.setAtivo(false);
+        prestacoesDAO.atualiza(prestacaoInativa);
+
+        ControladorCategoria controlCategoria = new ControladorCategoria(InstrumentationRegistry.getTargetContext());
+        Categoria cat1 = new Categoria();
+        cat1.setId(ID_CAT_COMBUSTIVEL);
+
+        assertEquals(100.0, controlCategoria.getTotalGastosCategoria(cat1, 1, 2017).doubleValue(), 0.0001);
+        assertEquals(1, controlCategoria.getTotalDeContas(cat1, 1, 2017));
+
+        assertEquals(100.0, controlCategoria.getTotalGastosCategoria(cat1, 2, 2017).doubleValue(), 0.0001);
+        assertEquals(2, controlCategoria.getTotalDeContas(cat1, 2, 2017));
+
+        assertEquals(200.0, controlCategoria.getTotalGastosCategoria(cat1, 3, 2017).doubleValue(), 0.0001);
+        assertEquals(2, controlCategoria.getTotalDeContas(cat1, 3, 2017));
+
     }
 }

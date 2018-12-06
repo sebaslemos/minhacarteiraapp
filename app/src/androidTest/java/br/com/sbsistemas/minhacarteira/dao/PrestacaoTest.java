@@ -15,7 +15,9 @@ import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by sebas on 20/08/2017.
@@ -104,7 +106,18 @@ public class PrestacaoTest {
     }
 
     @Test
-    public void testaBucarPrestacoesDeUmaConta(){
+    public void testaInativarUmaPrestacao(){
+        Conta conta = new Conta();
+        conta.setId(idConta);
+        Prestacao prestacao = prestacoesDAO.getPrestacao(conta, 1, 2017);
+        Prestacao prestacao2 = prestacoesDAO.getPrestacao(conta, 2, 2017);
 
+        assertTrue(prestacao.isAtivo());
+        assertTrue(prestacao2.isAtivo());
+
+        prestacao2.setAtivo(false);
+        prestacoesDAO.atualiza(prestacao2);
+        assertTrue(prestacao.isAtivo());
+        assertFalse(prestacao2.isAtivo());
     }
 }

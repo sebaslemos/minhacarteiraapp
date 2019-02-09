@@ -44,9 +44,6 @@ public class GrupoDAO{
     private static final String UPGRADE_TABLE_V5 =
             "CREATE INDEX " + IDX_DESCRICAO + " ON " + NOME_TABELA + " (" + COLUNA_DESCRICAO + ");";
 
-    private static final String UPGRADE_TABLE_DSV =
-            "DROP TABLE IF EXISTS " + NOME_TABELA;
-
     private static final String SQL_RECUPERA_TODOS =
             "SELECT * FROM " + NOME_TABELA;
 

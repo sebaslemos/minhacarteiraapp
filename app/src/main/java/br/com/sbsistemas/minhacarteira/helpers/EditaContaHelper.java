@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.ListaPrestacaoAdapter;
+import br.com.sbsistemas.minhacarteira.adapter.listeners.PrestacaoChangedListener;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorPrestacao;
@@ -22,7 +24,7 @@ import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
  * Created by sebas on 31/10/2017.
  */
 
-public class EditaContaHelper {
+public class EditaContaHelper implements PrestacaoChangedListener{
 
     private Activity context;
     private Conta conta;
@@ -82,9 +84,28 @@ public class EditaContaHelper {
     private void prencheLista() {
         List<Prestacao> prestacoes = controladorPrestacao.getPrestacoes(conta);
 
-        ListaPrestacaoAdapter adapter = new ListaPrestacaoAdapter(context, prestacoes);
+        ListaPrestacaoAdapter adapter = new ListaPrestacaoAdapter(context, prestacoes, this);
         prestacoesListView.setAdapter(adapter);
     }
 
 
+    @Override
+    public void atualizaPagoPrestacao(int position, boolean isChecked) {
+
+        ListaPrestacaoAdapter adapter = (ListaPrestacaoAdapter) prestacoesListView.getAdapter();
+        Prestacao prestacao = adapter.getItem(position);
+        prestacao.setPago(isChecked);
+        controladorPrestacao.atualiza(prestacao);
+        Toast.makeText(context, "Prestação atualizada", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void atualizaAtivoPrestacao(int position, boolean isChecked) {
+
+        ListaPrestacaoAdapter adapter = (ListaPrestacaoAdapter) prestacoesListView.getAdapter();
+        Prestacao prestacao = adapter.getItem(position);
+        prestacao.setAtivo(isChecked);
+        controladorPrestacao.atualiza(prestacao);
+        Toast.makeText(context, "Prestação atualizada", Toast.LENGTH_SHORT).show();
+    }
 }

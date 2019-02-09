@@ -62,7 +62,7 @@ public class ContaDAO {
 
 
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE.concat(UPGRADE_TABLE_V5));
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

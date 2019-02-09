@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Grupo"
+            android:textColor="@color/black"
             android:layout_weight="1"
             android:textSize="18sp"
             android:layout_marginLeft="5dp"
@@ -60,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Categoria"
+            android:textColor="@color/black"
             android:layout_weight="1"
             android:textSize="18sp"
             android:layout_marginLeft="5dp"
@@ -84,14 +86,17 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:layout_weight="2"
-        android:gravity="center">
+        android:gravity="center"
+        >
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Valor"
+            android:textColor="@color/black"
             android:layout_weight="1"
             android:textSize="18sp"
+            android:layout_marginLeft="5dp"
             />
 
         <EditText
@@ -109,6 +114,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@drawable/borda"
         />
 
 

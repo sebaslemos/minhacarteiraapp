@@ -111,7 +111,7 @@ public class CategoriaDAO {
     }
 
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE.concat(UPDATE_TABLE_V6));
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

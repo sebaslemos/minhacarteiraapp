@@ -32,9 +32,10 @@ import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
-public class ListaCategoriasActivity extends AppCompatActivity implements OnChartValueSelectedListener, AdapterView.OnItemClickListener {
+public class ListaCategoriasActivity extends AppCompatActivity {
 
     private Grupo grupoSelecionado;
+
     private LocalDate dataSelecionada;
 
     private TextView mesAnoTextView;
@@ -146,47 +147,16 @@ public class ListaCategoriasActivity extends AppCompatActivity implements OnChar
         saldoView = (TextView) findViewById(R.id.lista_categoria_saldo);
 
         listaCategoriasHelper = new ListaCategoriasHelper(this);
-        graficoCategoriasHelper = new GraficoCategoriaHelper(this, grupoSelecionado);
         estatisticasCategoriaHelper = new EstatisticasCategoriaHelper(this);
+        graficoCategoriasHelper = new GraficoCategoriaHelper(this, grupoSelecionado, estatisticasCategoriaHelper);
     }
 
-    /**
-     * Listener de clique no gráfico
-     */
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        Long idCategoria = (Long) e.getData();
-        Categoria categoriaSelecionada =
-                new ControladorCategoria(this).getCategoria(idCategoria);
-
-        estatisticasCategoriaHelper.atualizaEstatisticas(categoriaSelecionada, grupoSelecionado,
-                dataSelecionada);
+    public LocalDate getDataSelecionada() {
+        return dataSelecionada;
     }
 
-    /**
-     * Listener de clique no gráfico
-     */
-    @Override
-    public void onNothingSelected() {
-        estatisticasCategoriaHelper.atualizaEstatisticas(null,
-                grupoSelecionado, dataSelecionada);
+    public Grupo getGrupoSelecionado() {
+        return grupoSelecionado;
     }
 
-    /**
-     * Listener de click na lista de categorias
-     * @param parent
-     * @param view
-     * @param position
-     * @param id
-     */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        CategoriaAdapterTO categoriaTOClicada = listaCategoriasHelper.getCategoriaAtPosition(position);
-        Categoria categoria = categoriaTOClicada.getCategoria();
-
-        Intent intent = new Intent(ListaCategoriasActivity.this, ListaContasActivity.class);
-        intent.putExtra("categoria", categoria);
-        intent.putExtra("data", dataSelecionada);
-        startActivity(intent);
-    }
 }

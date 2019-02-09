@@ -37,9 +37,7 @@ import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
 import static android.widget.Toast.LENGTH_LONG;
 
-public class ListaContasActivity extends AppCompatActivity implements
-        AbsListView.MultiChoiceModeListener, AdapterView.OnItemClickListener,
-        CheckPagoListener{
+public class ListaContasActivity extends AppCompatActivity {
 
     private Categoria categoriaSelecionada;
     private LocalDate dataSelecionada;
@@ -135,7 +133,7 @@ public class ListaContasActivity extends AppCompatActivity implements
         saldoView.setText(String.format("Saldo R$ %.2f", saldo.doubleValue()));
     }
 
-    private void atualizaTela(){
+    public void atualizaTela(){
         atualizaData();
         listaContasHelper.atualizalistaDeContas(categoriaSelecionada, dataSelecionada);
         graficohelper.atualizaGrafico(dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
@@ -161,70 +159,4 @@ public class ListaContasActivity extends AppCompatActivity implements
         listaContasHelper = new ListaContaHelper(this);
     }
 
-    @Override
-    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-        ListaContasAdapter mAdaper = listaContasHelper.getAdapter();
-
-        mAdaper.alternarSelecao(position);
-
-        String msg = mAdaper.getTotalSelecionadas() > 1 ? " conta selecionada" : " contas selecionadas";
-        mode.setTitle(mAdaper.getTotalSelecionadas() + msg);
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_deletar, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        StringBuilder deletadasMsg = new StringBuilder();
-        SparseBooleanArray checkedItemPositions =
-                listaContasHelper.getContasListView().getCheckedItemPositions();
-        deletadasMsg.append("Contas deletadas: ");
-
-
-        for(int i = 0; i < listaContasHelper.getAdapter().getCount(); i++){
-            if(checkedItemPositions.get(i)){
-                ListaContaAdapterTO contaSelecionadaTO = listaContasHelper.getContaNaPosicao(i);
-                Conta contaSelecionada = contaSelecionadaTO.getConta();
-                controladorConta.deletar(contaSelecionada);
-                deletadasMsg.append(contaSelecionada.getDescricao() + " ,");
-            }
-        }
-
-        atualizaTela();
-        deletadasMsg = deletadasMsg.deleteCharAt(deletadasMsg.length() - 1);
-        Toast.makeText(ListaContasActivity.this, deletadasMsg.toString(), LENGTH_LONG).show();
-        return true;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        listaContasHelper.getAdapter().removeSelection();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ListaContaAdapterTO contaTO = listaContasHelper.getContaNaPosicao(position);
-
-        Intent intent = new Intent(ListaContasActivity.this, EditaContaActivity.class);
-        intent.putExtra("conta", contaTO.getConta());
-        startActivity(intent);
-    }
-
-    @Override
-    public void onPagoChecked(int posicaoPrestacao, boolean isChecked) {
-        ListaContaAdapterTO contaTO = listaContasHelper.getContaNaPosicao(posicaoPrestacao);
-        Prestacao prestacaoParaAtualizar = contaTO.getPrestacao();
-        ControladorPrestacao controladorPrestacao = new ControladorPrestacao(this);
-        prestacaoParaAtualizar.setPago(isChecked);
-        controladorPrestacao.atualiza(prestacaoParaAtualizar);
-    }
 }

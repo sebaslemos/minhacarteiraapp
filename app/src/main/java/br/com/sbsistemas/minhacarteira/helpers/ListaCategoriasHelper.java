@@ -1,5 +1,8 @@
 package br.com.sbsistemas.minhacarteira.helpers;
 
+import android.content.Intent;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.joda.time.LocalDate;
@@ -10,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.ListaCategoriasActivity;
+import br.com.sbsistemas.minhacarteira.ListaContasActivity;
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.ListaCategoriaAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.to.CategoriaAdapterTO;
@@ -32,7 +36,22 @@ public class ListaCategoriasHelper {
 
         categoriaActivity = context;
         categoriasListView = (ListView) categoriaActivity.findViewById(R.id.lista_categoria_lista);
-        categoriasListView.setOnItemClickListener(categoriaActivity);
+        configuraEventos();
+    }
+
+    private void configuraEventos(){
+        categoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CategoriaAdapterTO categoriaTOClicada = getCategoriaAtPosition(position);
+                Categoria categoria = categoriaTOClicada.getCategoria();
+
+                Intent intent = new Intent(categoriaActivity, ListaContasActivity.class);
+                intent.putExtra("categoria", categoria);
+                intent.putExtra("data", categoriaActivity.getDataSelecionada());
+                categoriaActivity.startActivity(intent);
+            }
+        });
     }
 
     public void carregaListaDeCategorias(Grupo grupoSelecionado, LocalDate dataSelecionada) {
@@ -76,4 +95,5 @@ public class ListaCategoriasHelper {
         ListaCategoriaAdapter adapter = (ListaCategoriaAdapter) categoriasListView.getAdapter();
         return adapter.getCategoriasAdapterTO();
     }
+
 }

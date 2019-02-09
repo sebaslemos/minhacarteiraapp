@@ -3,6 +3,10 @@ package br.com.sbsistemas.minhacarteira.helpers;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
@@ -26,7 +30,7 @@ import static br.com.sbsistemas.minhacarteira.R.id.lista_categoria_estatistica_t
  * Created by sebas on 17/11/2018.
  */
 
-public class EstatisticasCategoriaHelper {
+public class EstatisticasCategoriaHelper implements OnChartValueSelectedListener {
 
     private ListaCategoriasActivity categoriaActivity;
     private TextView tituloEstatistica;
@@ -91,4 +95,25 @@ public class EstatisticasCategoriaHelper {
         mediaEstatistica.setText(String.format("Média: R$ %.2f", media.floatValue()));
     }
 
+    /**
+     * Listener de clique no gráfico
+     */
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Long idCategoria = (Long) e.getData();
+        Categoria categoriaSelecionada =
+                new ControladorCategoria(categoriaActivity).getCategoria(idCategoria);
+
+        atualizaEstatisticas(categoriaSelecionada, categoriaActivity.getGrupoSelecionado(),
+                categoriaActivity.getDataSelecionada());
+    }
+
+    /**
+     * Listener de clique no gráfico
+     */
+    @Override
+    public void onNothingSelected() {
+        atualizaEstatisticas(null, categoriaActivity.getGrupoSelecionado(),
+                categoriaActivity.getDataSelecionada());
+    }
 }

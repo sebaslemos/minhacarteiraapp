@@ -23,7 +23,6 @@ import static br.com.sbsistemas.minhacarteira.R.layout.lista_categoria_linha_cat
 public class ListaCategoriaAdapter extends ArrayAdapter<CategoriaAdapterTO>{
 
     private Activity context;
-
     private List<CategoriaAdapterTO> categoriasAdapterTO;
 
     public ListaCategoriaAdapter(@NonNull Activity context, @NonNull List<CategoriaAdapterTO> categorias) {

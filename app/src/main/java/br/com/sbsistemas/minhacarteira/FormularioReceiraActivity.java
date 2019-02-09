@@ -20,7 +20,6 @@ import br.com.sbsistemas.minhacarteira.modelo.Receita;
 
 public class FormularioReceiraActivity extends AppCompatActivity {
 
-
     private FormularioReceitaHelper helper;
     private TextView dataText;
 

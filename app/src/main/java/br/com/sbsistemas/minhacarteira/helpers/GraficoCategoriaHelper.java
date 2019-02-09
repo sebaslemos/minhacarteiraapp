@@ -6,6 +6,8 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.math.BigDecimal;
@@ -16,6 +18,8 @@ import java.util.Locale;
 import br.com.sbsistemas.minhacarteira.ListaCategoriasActivity;
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.to.CategoriaAdapterTO;
+import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
+import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 /**
@@ -23,17 +27,20 @@ import br.com.sbsistemas.minhacarteira.modelo.Grupo;
  *
  */
 
-public class GraficoCategoriaHelper {
+public class GraficoCategoriaHelper  {
 
     private PieChart graficoCategorias;
     private ListaCategoriasActivity context;
     private Grupo grupo;
 
-    public GraficoCategoriaHelper(ListaCategoriasActivity context, Grupo grupo){
+
+    public GraficoCategoriaHelper(ListaCategoriasActivity context, Grupo grupo,
+                                  OnChartValueSelectedListener chartListener){
 
         this.context = context;
         this.grupo = grupo;
         this.graficoCategorias = (PieChart) this.context.findViewById(R.id.lista_categoria_grafico);
+        graficoCategorias.setOnChartValueSelectedListener(chartListener);
         configuraGrafico();
     }
 
@@ -49,7 +56,6 @@ public class GraficoCategoriaHelper {
         graficoCategorias.setDrawEntryLabels(false);
         graficoCategorias.setUsePercentValues(true);
 
-        graficoCategorias.setOnChartValueSelectedListener(context);
     }
 
     public void atualizaGrafico(List<CategoriaAdapterTO> categoriasTO){

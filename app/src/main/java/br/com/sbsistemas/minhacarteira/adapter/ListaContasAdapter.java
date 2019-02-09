@@ -40,11 +40,11 @@ public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
     private CheckPagoListener listener;
     private SparseBooleanArray mSelecionados;
 
-    public ListaContasAdapter(@NonNull Activity context, @NonNull List<ListaContaAdapterTO> contaAdapterTOs) {
+    public ListaContasAdapter(@NonNull Activity context, @NonNull List<ListaContaAdapterTO> contaAdapterTOs, CheckPagoListener listener) {
         super(context, R.layout.lista_contas_linha_conta , contaAdapterTOs);
         this.context = context;
         this.contaAdapterTOs = contaAdapterTOs;
-        this.listener = (CheckPagoListener) context;
+        this.listener = listener;
         mSelecionados = new SparseBooleanArray();
     }
 

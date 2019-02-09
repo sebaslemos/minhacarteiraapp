@@ -89,9 +89,7 @@ public class ListaPrestacaoAdapter extends ArrayAdapter<Prestacao>{
                 listener.atualizaAtivoPrestacao(position, holder.ativo.isChecked());
             }
         });
-
-
-
+        
         return linha;
     }
 

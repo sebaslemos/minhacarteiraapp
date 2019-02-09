@@ -41,8 +41,6 @@ public class ListaContasActivity extends AppCompatActivity {
 
     private Categoria categoriaSelecionada;
     private LocalDate dataSelecionada;
-    private ControladorConta controladorConta;
-
     private ListaContaHelper listaContasHelper;
     private TextView mesAnoTextView;
     private TextView totalReceitasView;
@@ -145,7 +143,6 @@ public class ListaContasActivity extends AppCompatActivity {
     }
 
     private void inicializaComponentes() {
-        controladorConta = new ControladorConta(this);
         categoriaSelecionada = (Categoria) getIntent().getExtras().get("categoria");
         dataSelecionada = (LocalDate) getIntent().getExtras().get("data");
         if(dataSelecionada == null) dataSelecionada = LocalDate.now();

@@ -167,4 +167,9 @@ public class ListaGrupos extends AppCompatActivity implements AdapterView.OnItem
             startActivity(intent);
         }
     }
+
+    public LocalDate getDataSelecionada() {
+        return dataSelecionada;
+    }
+
 }

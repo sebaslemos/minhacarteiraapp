@@ -41,13 +41,10 @@ public class CategoriaDAO {
                     " UNIQUE (" + COLUNA_DESCRICAO + "," + COLUNA_GRUPO_ID + ")" +
             ");";
 
-    private static final String UPDATE_TABLE_DESENV =
-            "DROP TABLE IF EXISTS " + NOME_TABELA;
     private static final String UPDATE_TABLE_V6 =
             "CREATE INDEX " + NOME_INDEX + " ON " + NOME_TABELA + "( " + COLUNA_GRUPO_ID + " );";
 
     private MinhaCarteiraDBHelper dbHelper;
-
 
     public CategoriaDAO(Context context){
         dbHelper = MinhaCarteiraDBHelper.getInstance(context);
@@ -74,8 +71,10 @@ public class CategoriaDAO {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL_BUSCA_TODAS, null);
+        List<Categoria> categorias = cursorToList(cursor);
+        cursor.close();
 
-        return cursorToList(cursor);
+        return categorias;
     }
 
     public boolean existe(String descricao, Long idGrupo) {
@@ -91,8 +90,13 @@ public class CategoriaDAO {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQLBuscaPorDescricaoEGrupo, args);
-        if(cursor.moveToNext()) return cursorToCategoria(cursor);
-        return null;
+
+        Categoria categoria = null;
+        if(cursor.moveToNext()) {
+            categoria = cursorToCategoria(cursor);
+        }
+        cursor.close();
+        return categoria;
     }
 
     public List<Categoria> getCategorias(Grupo grupo) {
@@ -107,11 +111,14 @@ public class CategoriaDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL_BUSCA_POR_GRUPO, args);
 
-        return cursorToList(cursor);
+        List<Categoria> categorias = cursorToList(cursor);
+        cursor.close();
+        return categorias;
     }
 
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE.concat(UPDATE_TABLE_V6));
+        db.execSQL(CREATE_TABLE);
+        db.execSQL(UPDATE_TABLE_V6);
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -157,8 +164,12 @@ public class CategoriaDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
-        if(cursor.moveToNext()) return cursorToCategoria(cursor);
-        return null;
+        Categoria categoria = null;
+        if(cursor.moveToNext()) {
+             categoria = cursorToCategoria(cursor);
+        }
+        cursor.close();
+        return categoria;
     }
 
     public BigDecimal getTotalGastos(@Nullable Categoria categoria, int mes, int ano){
@@ -190,8 +201,11 @@ public class CategoriaDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
+        BigDecimal totalGasto = new BigDecimal(0);
         if(cursor.moveToNext())
-            return new BigDecimal(cursor.getFloat(cursor.getColumnIndex("total")));
-        else return new BigDecimal(0);
+            totalGasto = new BigDecimal(cursor.getFloat(cursor.getColumnIndex("total")));
+
+        cursor.close();
+        return totalGasto;
     }
 }

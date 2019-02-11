@@ -62,7 +62,8 @@ public class ContaDAO {
 
 
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE.concat(UPGRADE_TABLE_V5));
+        db.execSQL(CREATE_TABLE);
+        db.execSQL(UPGRADE_TABLE_V5);
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -129,7 +130,9 @@ public class ContaDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
-        return cursorToList(cursor);
+        List<ListaContaAdapterTO> listaContaAdapterTOs = cursorToList(cursor);
+        cursor.close();
+        return listaContaAdapterTOs;
     }
 
     public void limpaBanco(){
@@ -143,6 +146,7 @@ public class ContaDAO {
         while(cursor.moveToNext()){
             contas.add(cursorToConta(cursor));
         }
+        cursor.close();
         return contas;
     }
 

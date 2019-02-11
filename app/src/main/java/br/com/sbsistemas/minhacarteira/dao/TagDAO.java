@@ -21,8 +21,6 @@ public class TagDAO {
             "CREATE TABLE " + NOME_TABELA +
             " (" + COLUNA_ID + " INTEGER PRIMARY KEY "+
             " ," + COLUNA_DESCRICAO + " TEXT);";
-    private final static String UPGRADE_TABLE_DSV =
-            "DROP TABLE IF EXISTS " + NOME_TABELA;
 
     public TagDAO(Context context){
         dbHelper = MinhaCarteiraDBHelper.getInstance(context);

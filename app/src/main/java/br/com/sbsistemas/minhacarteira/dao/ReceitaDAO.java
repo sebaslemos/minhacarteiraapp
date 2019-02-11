@@ -45,9 +45,7 @@ public class ReceitaDAO {
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(oldVersion < 4){
-            db.execSQL(CREATE_TABLE);
-        }
+
     }
 
     public Long adiciona(Receita receita){
@@ -65,7 +63,9 @@ public class ReceitaDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
-        return cursorToReceitas(cursor);
+        List<Receita> receitas = cursorToReceitas(cursor);
+        cursor.close();
+        return receitas;
 
     }
 

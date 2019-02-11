@@ -26,7 +26,7 @@ import br.com.sbsistemas.minhacarteira.helpers.ListaGruposHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
-public class ListaGrupos extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public class ListaGrupos extends AppCompatActivity {
 
     private TextView mesAnoText;
     private ListaGruposHelper listaGruposHelper;
@@ -142,30 +142,6 @@ public class ListaGrupos extends AppCompatActivity implements AdapterView.OnItem
         saldoView = (TextView) findViewById(R.id.lista_grupos_saldo);
         totalReceitasView = (TextView) findViewById(R.id.lista_grupos_recebido);
         graficoHelper = new GraficoGruposHelper(this);
-    }
-
-    /**
-     * Listenter de click na lista de grupos
-     * @param parent
-     * @param view
-     * @param position
-     * @param id
-     */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        GrupoAdapterTO grupoTO = listaGruposHelper.getGrupoTOAtPosition(position);
-        Grupo grupo = grupoTO.getGrupo();
-
-        if(grupo.getDescricao().equals(GrupoDAO.GRUPO_TODAS)){
-            Intent intent = new Intent(ListaGrupos.this, ListaContasActivity.class);
-            intent.putExtra("data", dataSelecionada);
-            startActivity(intent);
-        } else{
-            Intent intent = new Intent(ListaGrupos.this, ListaCategoriasActivity.class);
-            intent.putExtra("data", dataSelecionada);
-            intent.putExtra("grupo", grupo);
-            startActivity(intent);
-        }
     }
 
     public LocalDate getDataSelecionada() {

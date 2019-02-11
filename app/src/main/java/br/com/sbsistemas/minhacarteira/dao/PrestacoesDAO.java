@@ -42,8 +42,6 @@ public class PrestacoesDAO {
             ", FOREIGN KEY (" + CONTA_ID + ") REFERENCES " +
                     ContaDAO.NOME_TABELA + "(" + ContaDAO.ID + ") ON DELETE CASCADE" +
             ");";
-    private static final String UPDATE_TABLE_DSV =
-            "DROP TABLE IF EXISTS " + NOME_TABELA;
 
     private static final String UPDATE_TABLE_V5 =
             "CREATE INDEX " + NOME_IDX_DATA +
@@ -63,6 +61,9 @@ public class PrestacoesDAO {
 
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
+        db.execSQL(UPDATE_TABLE_V5);
+        db.execSQL(UPDATE_TABLE_V6_1);
+        db.execSQL(UPDATE_TABLE_V6_2);
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -107,10 +108,12 @@ public class PrestacoesDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
+        Prestacao prestacao  = null;
         if(cursor.moveToNext()){
-            return cursorToPrestacao(cursor);
+            prestacao = cursorToPrestacao(cursor);
         }
-        return null;
+        cursor.close();
+        return prestacao;
     }
 
     public List<Prestacao> getPrestacoes(Conta conta){
@@ -122,7 +125,9 @@ public class PrestacoesDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
-        return cursorToPrestacoes(cursor);
+        List<Prestacao> prestacoes = cursorToPrestacoes(cursor);
+        cursor.close();
+        return prestacoes;
     }
 
     private List<Prestacao> cursorToPrestacoes(Cursor cursor) {

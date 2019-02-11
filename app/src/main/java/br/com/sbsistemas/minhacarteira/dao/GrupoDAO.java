@@ -58,6 +58,7 @@ public class GrupoDAO{
     public static void onCreate(SQLiteDatabase db) {
         //cria a tabela
         db.execSQL(CREATE_TABLE);
+        db.execSQL(UPGRADE_TABLE_V5);
 
         //insere os grupos padrão
         String[] gruposPadrao = {GRUPO_TODAS, GRUPO_LAZER, GRUPO_MORADIA, GRUPO_SAUDE, GRUPO_TRANSPORTE, GRUPO_DIVERSAS, GRUPO_EDU_TRAB};
@@ -84,7 +85,7 @@ public class GrupoDAO{
             Grupo grupo = obtemGrupoDoCursor(cursor);
             todos.add(grupo);
         }
-
+        cursor.close();
         return todos;
     }
 
@@ -97,11 +98,13 @@ public class GrupoDAO{
         SQLiteDatabase db = minhaCarteiraDBHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args, null);
 
+        Grupo grupo = null;
         if(cursor.moveToNext()){
-            return  obtemGrupoDoCursor(cursor);
-        } else{
-            return null;
+            grupo = obtemGrupoDoCursor(cursor);
         }
+
+        cursor.close();
+        return grupo;
     }
 
     private Grupo obtemGrupoDoCursor(Cursor cursor) {
@@ -125,9 +128,13 @@ public class GrupoDAO{
 
         SQLiteDatabase db = minhaCarteiraDBHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
-        if(cursor.moveToNext()) return obtemGrupoDoCursor(cursor);
 
-        return null;
+        Grupo grupo = null;
+        if(cursor.moveToNext()) {
+            grupo = obtemGrupoDoCursor(cursor);
+        }
+        cursor.close();
+        return grupo;
     }
 
     public QuantidadeValorTO getQuantitadeValor(Grupo grupo, int mes, int ano){
@@ -154,7 +161,9 @@ public class GrupoDAO{
         SQLiteDatabase db = minhaCarteiraDBHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
-        return cursorToQuantidadeValor(cursor);
+        QuantidadeValorTO quantidadeValorTO = cursorToQuantidadeValor(cursor);
+        cursor.close();
+        return quantidadeValorTO;
     }
 
     private QuantidadeValorTO cursorToQuantidadeValor(Cursor cursor) {

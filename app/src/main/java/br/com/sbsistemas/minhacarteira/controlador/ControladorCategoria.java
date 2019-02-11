@@ -11,13 +11,9 @@ import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
 import br.com.sbsistemas.minhacarteira.dao.CategoriaDAO;
-import br.com.sbsistemas.minhacarteira.dao.ContaDAO;
-import br.com.sbsistemas.minhacarteira.dao.PrestacoesDAO;
 import br.com.sbsistemas.minhacarteira.exception.CategoriaRepetidaException;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
-import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
-import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 
 /**
  * Created by sebas on 20/08/2017.
@@ -62,7 +58,11 @@ public class ControladorCategoria {
      * @return
      */
     public BigDecimal getTotalGastosCategoria(Categoria categoria, int mes, int ano){
-        return new CategoriaDAO(context).getTotalGastos(categoria, mes, ano);
+        CategoriaDAO categoriaDAO = new CategoriaDAO(context);
+        BigDecimal totalGastos = categoriaDAO.getTotalGastos(categoria, mes, ano);
+        categoriaDAO.close();
+        return totalGastos;
+
     }
 
     public long criarCategoria(Categoria categoria){

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,7 +19,8 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:onClick="selecionaData"/>
+            android:onClick="selecionaData"
+            android:textColor="@color/black"/>
 
         <Button
             android:id="@+id/lista_receitas_mes_anterior"
@@ -46,7 +46,6 @@
             android:id="@+id/lista_receitas_grafico"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="graficos"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/lista_receitas_mes_ano"/>
     </RelativeLayout>
@@ -77,19 +76,19 @@
             android:id="@+id/lista_receitas_recebido"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Receitas: R$ 30.000,00"
             android:layout_weight="1"
-            android:gravity="center|left"
-            android:layout_marginLeft="10dp"
+            android:gravity="center|start"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/black"
             />
 
         <TextView
             android:id="@+id/lista_receitas_saldo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Saldo R$ 30.000,00"
             android:layout_weight="1"
-            android:gravity="center|right"
+            android:gravity="center|end"
+            android:textColor="@color/black"
             />
 
 

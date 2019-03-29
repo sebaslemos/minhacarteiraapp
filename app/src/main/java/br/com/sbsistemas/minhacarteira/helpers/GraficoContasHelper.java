@@ -3,13 +3,11 @@ package br.com.sbsistemas.minhacarteira.helpers;
 import android.app.Activity;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -28,6 +26,9 @@ import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.utils.CorGrupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
+import br.com.sbsistemas.minhacarteira.utils.graficos.EntryYComparator;
+import br.com.sbsistemas.minhacarteira.utils.graficos.XvaluesFormatterLineChart;
+import br.com.sbsistemas.minhacarteira.utils.graficos.YValuesFormatterLineChart;
 
 import static br.com.sbsistemas.minhacarteira.R.id.lista_contas_grafico;
 
@@ -45,7 +46,7 @@ public class GraficoContasHelper {
     public GraficoContasHelper(Activity activity, Categoria categoria){
         this.activity = activity;
         this.categoria = categoria;
-        grafico = (LineChart) this.activity.findViewById(lista_contas_grafico);
+        grafico = this.activity.findViewById(lista_contas_grafico);
     }
 
     public void atualizaGrafico(int mes, int ano){
@@ -87,19 +88,19 @@ public class GraficoContasHelper {
         XAxis xAxis = grafico.getXAxis();
         xAxis.setGranularity(1f);
         xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(new XvaluesFormatter(meses));
+        xAxis.setValueFormatter(new XvaluesFormatterLineChart(meses));
 
         YAxis yAxis = grafico.getAxisLeft();
-        yAxis.setValueFormatter(new YValuesFormatter());
+        yAxis.setValueFormatter(new YValuesFormatterLineChart());
         yAxis.setDrawGridLines(false);
         YAxis axisRight = grafico.getAxisRight();
-        axisRight.setValueFormatter(new YValuesFormatter());
+        axisRight.setValueFormatter(new YValuesFormatterLineChart());
         axisRight.setDrawGridLines(false);
 
         grafico.setDoubleTapToZoomEnabled(false);
         grafico.setClickable(false);
         grafico.setDescription(null);
-        grafico.animateXY(1000,3000);
+        grafico.animateXY(1000,2000);
         grafico.invalidate();
     }
 
@@ -111,38 +112,6 @@ public class GraficoContasHelper {
         if(categoria == null) return "Todas";
 
         return grupo.getDescricao() + "/" + categoria.getDescricao();
-    }
-
-    private class EntryYComparator<entry> implements java.util.Comparator<com.github.mikephil.charting.data.Entry> {
-
-        @Override
-        public int compare(Entry o1, Entry o2) {
-            if(o1.getX() < o2.getX()) return -1;
-            if(o1.getX() > o2.getX()) return 1;
-            return 0;
-        }
-    }
-
-    private class XvaluesFormatter implements IAxisValueFormatter{
-
-        private String[] meses;
-
-        protected XvaluesFormatter(String[] meses){
-            this.meses = meses;
-        }
-
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-            return meses[(int) value];
-        }
-    }
-
-    private class YValuesFormatter implements IAxisValueFormatter{
-
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-            return "";
-        }
     }
 
     private class CenterValuesFormatter implements IValueFormatter{

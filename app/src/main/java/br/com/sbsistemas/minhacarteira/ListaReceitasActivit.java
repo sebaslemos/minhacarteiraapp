@@ -29,6 +29,7 @@ import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
+import br.com.sbsistemas.minhacarteira.helpers.GraficoReceitasHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Receita;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
@@ -43,6 +44,7 @@ public class ListaReceitasActivit extends AppCompatActivity {
     private TextView mesAnoText;
     private TextView totalReceitasView;
     private TextView saldoView;
+    private GraficoReceitasHelper graficoReceitasHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +158,8 @@ public class ListaReceitasActivit extends AppCompatActivity {
         carregaLista();
         atualizaData();
         atualizaReceitasESaldo();
+        graficoReceitasHelper.atualizaGrafico(dataSelecionada.getMonthOfYear(),
+                dataSelecionada.getYear());
     }
 
     private void atualizaReceitasESaldo() {
@@ -195,5 +199,7 @@ public class ListaReceitasActivit extends AppCompatActivity {
 
         dataSelecionada = (LocalDate) getIntent().getExtras().get("data");
         if(dataSelecionada == null) dataSelecionada = LocalDate.now();
+
+        graficoReceitasHelper = new GraficoReceitasHelper(this);
     }
 }

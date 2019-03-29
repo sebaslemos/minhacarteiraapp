@@ -42,11 +42,11 @@
             android:background="@null"
             android:onClick="avancaUmMes"/>
 
-        <TextView
+        <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/lista_receitas_grafico"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
             android:layout_below="@id/lista_receitas_mes_ano"/>
     </RelativeLayout>
 

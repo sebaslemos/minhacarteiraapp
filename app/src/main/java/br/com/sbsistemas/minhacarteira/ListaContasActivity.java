@@ -4,38 +4,24 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 
-import br.com.sbsistemas.minhacarteira.adapter.ListaContasAdapter;
-import br.com.sbsistemas.minhacarteira.adapter.listeners.CheckPagoListener;
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
-import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
-import br.com.sbsistemas.minhacarteira.controlador.ControladorPrestacao;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.helpers.GraficoContasHelper;
 import br.com.sbsistemas.minhacarteira.helpers.ListaContaHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
-import br.com.sbsistemas.minhacarteira.modelo.Conta;
-import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
-
-import static android.widget.Toast.LENGTH_LONG;
 
 public class ListaContasActivity extends AppCompatActivity {
 
@@ -139,7 +125,7 @@ public class ListaContasActivity extends AppCompatActivity {
     }
 
     private void atualizaData() {
-        mesAnoTextView.setText(new LocalDateUtils(null).getMesAno(dataSelecionada));
+        mesAnoTextView.setText(LocalDateUtils.getMesAno(dataSelecionada));
     }
 
     private void inicializaComponentes() {

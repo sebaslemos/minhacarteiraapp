@@ -35,7 +35,7 @@ public class ListaCategoriasHelper {
     public ListaCategoriasHelper(ListaCategoriasActivity context){
 
         categoriaActivity = context;
-        categoriasListView = (ListView) categoriaActivity.findViewById(R.id.lista_categoria_lista);
+        categoriasListView = categoriaActivity.findViewById(R.id.lista_categoria_lista);
         configuraEventos();
     }
 
@@ -61,15 +61,23 @@ public class ListaCategoriasHelper {
                 grupoSelecionado, dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
         List<CategoriaAdapterTO> categoriasTO = new ArrayList<>();
+        int totalNumeroDeContas = 0;
+        BigDecimal totalValorContas = new BigDecimal(0);
         for(Categoria categoria : categoriasComContas){
-            int totalContas = controladorCategoria.getTotalDeContas(categoria,
+            int totalContasCategoria = controladorCategoria.getTotalDeContas(categoria,
                     dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
             BigDecimal totalGastosCategoria = controladorCategoria.getTotalGastosCategoria(categoria,
                     dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
             CategoriaAdapterTO categoriaTO = new CategoriaAdapterTO(categoria,
-                    totalContas, totalGastosCategoria);
+                    totalContasCategoria, totalGastosCategoria);
             categoriasTO.add(categoriaTO);
+
+            totalNumeroDeContas += totalContasCategoria;
+            totalValorContas = totalValorContas.add(totalGastosCategoria);
         }
+        //Cria uma categoria a mais, representando todas as contas do grupo
+        categoriasTO.add(criaCategoriaTodas(totalNumeroDeContas, totalValorContas,
+                grupoSelecionado));
 
         Collections.sort(categoriasTO);
         Collections.reverse(categoriasTO);
@@ -77,7 +85,7 @@ public class ListaCategoriasHelper {
         //cria o gradiente de cores das categorias do grupo
         ColorGradientGenerator gradiente =
                 new ColorGradientGenerator(new CorGrupo().getCorRGB(grupoSelecionado.getDescricao()),
-                        categoriasComContas.size());
+                        categoriasTO.size());
         int[] cores = gradiente.gerarGradiente();
         for(int i = 0; i < categoriasTO.size(); i++){
             categoriasTO.get(i).setBackgroundColor(cores[i]);
@@ -85,6 +93,18 @@ public class ListaCategoriasHelper {
 
         ListaCategoriaAdapter adapter = new ListaCategoriaAdapter(categoriaActivity, categoriasTO);
         categoriasListView.setAdapter(adapter);
+    }
+
+    private CategoriaAdapterTO criaCategoriaTodas(int totalNumeroDeContas,
+                                                  BigDecimal totalValorContas,
+                                                  Grupo grupoSelecionado) {
+        Categoria todas = new Categoria();
+        todas.setIdGrupo(grupoSelecionado.getId());
+        todas.setDescricao("Todas");
+
+        CategoriaAdapterTO todasTO = new CategoriaAdapterTO(todas, totalNumeroDeContas,
+                totalValorContas);
+        return todasTO;
     }
 
     public CategoriaAdapterTO getCategoriaAtPosition(int position) {

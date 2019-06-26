@@ -65,7 +65,8 @@ public class GraficoCategoriaHelper  {
 
         for(CategoriaAdapterTO categoriaTO : categoriasTO){
 
-            if(categoriaTO.getTotalGastos().equals(new BigDecimal(0))) continue;
+            if(categoriaTO.getTotalGastos().equals(new BigDecimal(0)) ||
+                categoriaTO.getCategoria().getId() == null ) continue;
 
             PieEntry entry = new PieEntry(categoriaTO.getTotalGastos().floatValue(),
                     categoriaTO.getCategoria().getId());

@@ -105,7 +105,7 @@ public class ContaDAO {
         String[] args;
 
         if(categoria == null){
-            //lista todas
+            //lista todas as contas
             SQL = "SELECT conta.*, prest.id as prest_id, prest.ativo, prest.data, prest.prestacao_numero, prest.pago, grupo.descricao as grupo_desc " +
                     " FROM " + NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
                     " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +
@@ -114,7 +114,21 @@ public class ContaDAO {
                     " WHERE prest." + PrestacoesDAO.DATA + " >= " + "?" +
                     " AND prest." + PrestacoesDAO.DATA + " <= " + "?";
             args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano)};
-        } else{
+        } else if(categoria.getId() == null){ //categoria todas
+            //lista contas de um grupo
+            SQL = "SELECT conta.*, prest.id as prest_id, prest.ativo, prest.data, prest.prestacao_numero, prest.pago, grupo.descricao as grupo_desc " +
+                    " FROM " + NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
+                    " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +
+                    " INNER JOIN Categoria cat on cat.id = conta.id_categoria " +
+                    " INNER JOIN Grupo grupo on grupo.id = cat.id_grupo " +
+                    " WHERE prest." + PrestacoesDAO.DATA + " >= " + "?" +
+                    " AND prest." + PrestacoesDAO.DATA + " <= " + "?" +
+                    " AND grupo." + GrupoDAO.COLUNA_ID + " = ?";
+            args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano),
+                    categoria.getIdGrupo().toString()};
+        }
+        else{
+            //lista contas de uma categoria
             SQL = "SELECT conta.*, prest.id as prest_id, prest.ativo, prest.data, prest.prestacao_numero, prest.pago, grupo.descricao as grupo_desc " +
                     " FROM " + NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
                     " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +

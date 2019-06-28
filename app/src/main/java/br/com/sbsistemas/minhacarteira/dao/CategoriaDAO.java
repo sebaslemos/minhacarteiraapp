@@ -185,6 +185,21 @@ public class CategoriaDAO {
                     " AND prest." + PrestacoesDAO.DATA + " <= " + "?" +
                     " AND prest." + PrestacoesDAO.ATIVO + " = 1";
             args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano)};
+        } else if(categoria.getId() == null){ //categoria todas
+            SQL = "SELECT sum(conta." + ContaDAO.VALOR + ") as total " +
+                    " FROM " + ContaDAO.NOME_TABELA + " as conta " +
+                    " INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +
+                    " on (prest." + PrestacoesDAO.CONTA_ID + " = conta." + ContaDAO.ID + ")" +
+                    " INNER JOIN " + CategoriaDAO.NOME_TABELA + " as cat " +
+                    " on cat." + CategoriaDAO.ID + " = conta." + ContaDAO.CATEGORIA_ID +
+                    " INNER JOIN " + GrupoDAO.NOME_TABELA + " as grupo " +
+                    " on grupo." + GrupoDAO.COLUNA_ID + " = cat." + CategoriaDAO.COLUNA_GRUPO_ID +
+                    " WHERE prest." + PrestacoesDAO.DATA + " >= " + "?" +
+                    " AND prest." + PrestacoesDAO.DATA + " <= " + "?" +
+                    " AND prest." + PrestacoesDAO.ATIVO + " = 1" +
+                    " AND grupo." + GrupoDAO.COLUNA_ID + " = ?";
+            args = new String[]{LocalDateUtils.getInicioMes(mes, ano), LocalDateUtils.getFinalMes(mes, ano),
+            categoria.getIdGrupo().toString()};
         } else{
             SQL = "SELECT sum(conta." + ContaDAO.VALOR + ") as total " +
                     " FROM " + ContaDAO.NOME_TABELA + " as conta INNER JOIN " + PrestacoesDAO.NOME_TABELA + " as prest" +

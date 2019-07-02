@@ -7,8 +7,8 @@ android {
         applicationId "br.com.sbsistemas.minhacarteira"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.1 Alfa"
+        versionCode 4
+        versionName "2.0 Alfa"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -158,13 +158,13 @@ public class ContaDAO {
         List<ListaContaAdapterTO> contas = new ArrayList<ListaContaAdapterTO>();
 
         while(cursor.moveToNext()){
-            contas.add(cursorToConta(cursor));
+            contas.add(cursorToContaTO(cursor));
         }
         cursor.close();
         return contas;
     }
 
-    private ListaContaAdapterTO cursorToConta(Cursor cursor) {
+    private ListaContaAdapterTO cursorToContaTO(Cursor cursor) {
         Conta conta = new Conta();
         conta.setDescricao(cursor.getString(cursor.getColumnIndex(COLUNA_DESCRICAO)));
         conta.setId(cursor.getLong(cursor.getColumnIndex(ID)));
@@ -202,5 +202,32 @@ public class ContaDAO {
         String whereSQL = ID + " = ?" ;
         String[] args = {conta.getId().toString()};
         db.update(NOME_TABELA, contaToContentValues(conta), whereSQL, args);
+    }
+
+    public List<Conta> getContas(Categoria categoria) {
+        String SQL =
+                "SELECT * FROM " + ContaDAO.NOME_TABELA +
+                " WHERE " + ContaDAO.CATEGORIA_ID + " = ?";
+        String[] args = new String[] {categoria.getId().toString()};
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SQL, args);
+
+        List<Conta> contas = new ArrayList<Conta>();
+        while(cursor.moveToNext())
+            contas.add(cursorToConta(cursor));
+
+        return contas;
+    }
+
+    private Conta cursorToConta(Cursor cursor) {
+        Conta conta = new Conta();
+        conta.setDescricao(cursor.getString(cursor.getColumnIndex(COLUNA_DESCRICAO)));
+        conta.setId(cursor.getLong(cursor.getColumnIndex(ID)));
+        conta.setCategoria(cursor.getLong(cursor.getColumnIndex(CATEGORIA_ID)));
+        conta.setNumeroDePrestacoes(cursor.getInt(cursor.getColumnIndex(COLUNA_PRESTACOES)));
+        conta.setTag(cursor.getLong(cursor.getColumnIndex(COLUNA_TAG_ID)));
+        conta.setValor(new BigDecimal(cursor.getDouble(cursor.getColumnIndex(VALOR))));
+        return conta;
     }
 }

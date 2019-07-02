@@ -1,8 +1,5 @@
 package br.com.sbsistemas.minhacarteira.adapter;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +10,12 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 import java.util.Map;
 
 import br.com.sbsistemas.minhacarteira.FormularioCategoriaActivity;
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
-import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.exception.CategoriaRepetidaException;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
@@ -54,12 +48,12 @@ public class FormularioCategoriaListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
+    public Grupo getGroup(int groupPosition) {
         return grupos.get(groupPosition);
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition) {
+    public Categoria getChild(int groupPosition, int childPosition) {
         return categorias.get(grupos.get(groupPosition)).get(childPosition);
     }
 
@@ -84,7 +78,7 @@ public class FormularioCategoriaListAdapter extends BaseExpandableListAdapter {
             convertView = context.getLayoutInflater().inflate(
                     R.layout.formulario_categoria_linha_grupo, parent, false);
 
-        TextView grupoText = (TextView) convertView.findViewById(R.id.formulario_categoria_linha_grupo_text);
+        TextView grupoText = convertView.findViewById(R.id.formulario_categoria_linha_grupo_text);
         grupoText.setText(grupos.get(groupPosition).getDescricao());
 
         if(isExpanded){
@@ -110,7 +104,7 @@ public class FormularioCategoriaListAdapter extends BaseExpandableListAdapter {
         TextView categoriaText = (TextView) convertView.findViewById(
                 R.id.formulario_categoria_linha_categoria_text);
 
-        if(categoria.getId().equals(Long.valueOf(999999999))){
+        if(categoria.getId().equals(Long.valueOf(ID_CATEGORIA_ADICIONAR))){
             novaCategoriaText.setVisibility(View.VISIBLE);
             novaCategoriaText.setHint(categoria.getDescricao());
             botaoSalvar.setVisibility(View.VISIBLE);
@@ -151,4 +145,5 @@ public class FormularioCategoriaListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
 }

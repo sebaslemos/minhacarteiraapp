@@ -223,4 +223,9 @@ public class CategoriaDAO {
         cursor.close();
         return totalGasto;
     }
+
+    public void delete(Categoria categoria) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(NOME_TABELA, ID + " = ?", new String[]{categoria.getId().toString()});
+    }
 }

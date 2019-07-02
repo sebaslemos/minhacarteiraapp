@@ -106,4 +106,13 @@ public class ControladorConta {
 
         dao.close();
     }
+
+    public List<Conta> getContas(Categoria categoria) {
+        ContaDAO dao = new ContaDAO(context);
+
+        List<Conta> contas = dao.getContas(categoria);
+        dao.close();
+
+        return contas;
+    }
 }

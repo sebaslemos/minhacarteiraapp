@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.joda.time.LocalDate;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -129,4 +130,43 @@ public class ContaTest {
         assertEquals(1, contasManutencao.size());
     }
 
+    @Test
+    public void testaContasAtivasDodia(){
+
+        //deve ir (ativa e não paga
+        Conta conta1 = new Conta();
+        conta1.setCategoria(ID_CAT_MANUTENCAO);
+        conta1.setDescricao("Conta 1");
+        conta1.setNumeroDePrestacoes(3);
+        conta1.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta1, false, new LocalDate(2018, 11, 3), true);
+
+        //nao deve ir, nao ativa
+        Conta conta2 = new Conta();
+        conta2.setCategoria(ID_CAT_MANUTENCAO);
+        conta2.setDescricao("Conta 2");
+        conta2.setNumeroDePrestacoes(1);
+        conta2.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta2, false, new LocalDate(2018, 12, 3), false);
+
+        //deve ir, ativa e nao paga
+        Conta conta3 = new Conta();
+        conta3.setCategoria(ID_CAT_MANUTENCAO);
+        conta3.setDescricao("Conta 3");
+        conta3.setNumeroDePrestacoes(1);
+        conta3.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta3, false, new LocalDate(2018, 12, 3), true);
+
+        //nao deve ir, ativa e paga
+        Conta conta4 = new Conta();
+        conta4.setCategoria(ID_CAT_MANUTENCAO);
+        conta4.setDescricao("Conta 4");
+        conta4.setNumeroDePrestacoes(1);
+        conta4.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta4, true, new LocalDate(2018, 12, 03), true);
+
+        List<Conta> contasNaoPagas = ctrlConta.getContasNaoPagas(3, 12, 2018);
+
+        assertEquals(2, contasNaoPagas.size());
+    }
 }

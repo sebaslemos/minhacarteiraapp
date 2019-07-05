@@ -1,6 +1,7 @@
 package br.com.sbsistemas.minhacarteira.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDate;
 
@@ -38,6 +39,11 @@ public class LocalDateUtils {
         this.hoje = new LocalDate();
     }
 
+    public static String getDataStr(int dia, int mes, int ano) {
+        return ano + "-" + getMesDiaFormatado(mes) + "-" + getMesDiaFormatado(dia);
+
+    }
+
     public LocalDate getHoje() {
         if(hoje == null) return new LocalDate();
 
@@ -45,14 +51,21 @@ public class LocalDateUtils {
     }
 
     public static String getInicioMes(int mes, int ano){
-        String mesFormatado = mes < 10 ? "0" + mes : mes + "";
+        String mesFormatado = getMesDiaFormatado(mes);
         return ano + "-" + mesFormatado + "-" + "01";
     }
 
+    @NonNull
+    private static String getMesDiaFormatado(int mesOudia) {
+        return mesOudia < 10 ? "0" + mesOudia : mesOudia + "";
+    }
+
     public static String getFinalMes(int mes, int ano){
-        String mesFormatado = mes < 10 ? "0" + mes : mes + "";
+        String mesFormatado = getMesDiaFormatado(mes);
         return ano + "-" + mesFormatado + "-" + "31";
     }
+
+
 
     /**
      * imprime o mes e o ano de uma Data

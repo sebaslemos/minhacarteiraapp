@@ -40,6 +40,13 @@ public class ControladorConta {
         return  contas;
     }
 
+    public List<Conta> getContasNaoPagas(int dia, int mes, int ano){
+        ContaDAO dao = new ContaDAO(context);
+        List<Conta> contasNaoPagas = dao.getContasNaoPagas(dia, mes, ano);
+        dao.close();
+        return contasNaoPagas;
+    }
+
     public long criarConta(Conta conta, boolean pago, LocalDate dataConta, boolean ativo){
         validaDados(conta, dataConta);
 

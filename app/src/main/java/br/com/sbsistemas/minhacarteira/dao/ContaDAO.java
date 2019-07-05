@@ -230,4 +230,25 @@ public class ContaDAO {
         conta.setValor(new BigDecimal(cursor.getDouble(cursor.getColumnIndex(VALOR))));
         return conta;
     }
+
+    public List<Conta> getContasNaoPagas(int dia, int mes, int ano) {
+        String SQL =
+                "SELECT c.* "
+                + " FROM " + PrestacoesDAO.NOME_TABELA + " p "
+                + " INNER JOIN " + ContaDAO.NOME_TABELA  + " c "
+                +        " on " + "c." + ContaDAO.ID +  " = p." + PrestacoesDAO.CONTA_ID
+                + " WHERE p." + PrestacoesDAO.DATA + " = ?"
+                + " AND p." + PrestacoesDAO.ATIVO + " = 1"
+                + " AND p." + PrestacoesDAO.COLUNA_PAGO + " = 0";
+        String[] args = new String[]{LocalDateUtils.getDataStr(dia, mes, ano)};
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SQL, args);
+        List<Conta> contas = new ArrayList<Conta>();
+        while (cursor.moveToNext()){
+            contas.add(cursorToConta(cursor));
+        }
+
+        return contas;
+    }
 }

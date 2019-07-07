@@ -67,4 +67,8 @@ public class Conta implements Serializable {
         this.tagId = tagId;
     }
 
+    public String getValorFormatado(){
+        return String.format("R$ %.2f", this.valor.doubleValue());
+    }
+
 }

@@ -88,8 +88,7 @@ public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
         String prestacaoAtual = prestacao.getNumParcela() + "/" + conta.getNumeroDePrestacoes();
         holder.data.setText(data + " " + prestacaoAtual);
 
-        BigDecimal valor = conta.getValor();
-        holder.valor.setText(String.format("R$ %.2f", valor.doubleValue()));
+        holder.valor.setText(conta.getValorFormatado());
 
         holder.pago.setOnClickListener(new View.OnClickListener() {
             @Override

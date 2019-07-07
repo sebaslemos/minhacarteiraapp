@@ -56,7 +56,6 @@ public class ListaContaHelper implements CheckPagoListener, AdapterView.OnItemCl
 
     public void atualizalistaDeContas(Categoria categoriaSelecionada, LocalDate dataSelecionada){
         ControladorConta controladorConta = new ControladorConta(contaActivity);
-        ControladorPrestacao controladorPrestacao = new ControladorPrestacao(contaActivity);
 
         List<ListaContaAdapterTO> listaContaAdapterTOs = controladorConta.getContas(categoriaSelecionada,
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());

@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.joda.time.LocalDate;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,7 @@ import org.junit.runner.RunWith;
 import java.math.BigDecimal;
 import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
@@ -75,7 +74,7 @@ public class ContaTest {
 
         Categoria vazia = new Categoria();
         vazia.setId(ID_CAT_SAIDAS);
-        List<ListaContaAdapterTO> contas = ctrlConta.getContas(vazia, 12, 2017);
+        List<ContaTO> contas = ctrlConta.getContas(vazia, 12, 2017);
 
         assertEquals(0, contas.size());
     }
@@ -105,8 +104,8 @@ public class ContaTest {
 
         ctrlConta.criarConta(compraOutra, true, new LocalDate(2017, 2, 1), true);
 
-        List<ListaContaAdapterTO> contasManutencao = ctrlConta.getContas(manutencao, 2, 2017);
-        List<ListaContaAdapterTO> contasOutras = ctrlConta.getContas(outraCategoria, 2, 2017);
+        List<ContaTO> contasManutencao = ctrlConta.getContas(manutencao, 2, 2017);
+        List<ContaTO> contasOutras = ctrlConta.getContas(outraCategoria, 2, 2017);
 
         assertEquals(1, contasOutras.size());
         assertEquals(1, contasManutencao.size());
@@ -126,7 +125,7 @@ public class ContaTest {
 
         ctrlConta.criarConta(compraMartelo, true, new LocalDate(2017, 12, 31), false);
 
-        List<ListaContaAdapterTO> contasManutencao = ctrlConta.getContas(manutencao, 12, 2017);
+        List<ContaTO> contasManutencao = ctrlConta.getContas(manutencao, 12, 2017);
         assertEquals(1, contasManutencao.size());
     }
 
@@ -165,7 +164,7 @@ public class ContaTest {
         conta4.setValor(new BigDecimal(200));
         ctrlConta.criarConta(conta4, true, new LocalDate(2018, 12, 03), true);
 
-        List<Conta> contasNaoPagas = ctrlConta.getContasNaoPagas(3, 12, 2018);
+        List<ContaTO> contasNaoPagas = ctrlConta.getContasNaoPagas(3, 12, 2018);
 
         assertEquals(2, contasNaoPagas.size());
     }

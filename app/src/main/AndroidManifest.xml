@@ -25,6 +25,8 @@
         <activity android:name=".ListaReceitasActivit" />
         <activity android:name=".FormularioReceiraActivity" />
         <activity android:name=".EditaContaActivity" android:windowSoftInputMode="adjustPan" />
+
+        <receiver android:name=".broadcast.ActionReceiver"/>
     </application>
 
 </manifest>

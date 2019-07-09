@@ -2,11 +2,13 @@ package br.com.sbsistemas.minhacarteira.modelo;
 
 import org.joda.time.LocalDate;
 
+import java.io.Serializable;
+
 /**
  * Created by sebas on 04/08/2017.
  */
 
-public class Prestacao {
+public class Prestacao implements Serializable {
 
     private Long id;
     private Long contaId;

@@ -21,7 +21,7 @@ import br.com.sbsistemas.minhacarteira.ListaContasActivity;
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.ListaContasAdapter;
 import br.com.sbsistemas.minhacarteira.adapter.listeners.CheckPagoListener;
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorPrestacao;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
@@ -57,7 +57,7 @@ public class ListaContaHelper implements CheckPagoListener, AdapterView.OnItemCl
     public void atualizalistaDeContas(Categoria categoriaSelecionada, LocalDate dataSelecionada){
         ControladorConta controladorConta = new ControladorConta(contaActivity);
 
-        List<ListaContaAdapterTO> listaContaAdapterTOs = controladorConta.getContas(categoriaSelecionada,
+        List<ContaTO> listaContaAdapterTOs = controladorConta.getContas(categoriaSelecionada,
                 dataSelecionada.getMonthOfYear(), dataSelecionada.getYear());
 
         Collections.sort(listaContaAdapterTOs);
@@ -69,13 +69,13 @@ public class ListaContaHelper implements CheckPagoListener, AdapterView.OnItemCl
         return (ListaContasAdapter) contasListView.getAdapter();
     }
 
-    public ListaContaAdapterTO getContaNaPosicao(int posicao){
+    public ContaTO getContaNaPosicao(int posicao){
         return getAdapter().getItem(posicao);
     }
 
     @Override
     public void onPagoChecked(int posicaoPrestacao, boolean isChecked) {
-        ListaContaAdapterTO contaTO = getContaNaPosicao(posicaoPrestacao);
+        ContaTO contaTO = getContaNaPosicao(posicaoPrestacao);
         Prestacao prestacaoParaAtualizar = contaTO.getPrestacao();
         ControladorPrestacao controladorPrestacao = new ControladorPrestacao(contaActivity);
         prestacaoParaAtualizar.setPago(isChecked);
@@ -84,7 +84,7 @@ public class ListaContaHelper implements CheckPagoListener, AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ListaContaAdapterTO contaTO = getContaNaPosicao(position);
+        ContaTO contaTO = getContaNaPosicao(position);
 
         Intent intent = new Intent(contaActivity, EditaContaActivity.class);
         intent.putExtra("conta", contaTO.getConta());
@@ -122,7 +122,7 @@ public class ListaContaHelper implements CheckPagoListener, AdapterView.OnItemCl
 
         for(int i = 0; i < getAdapter().getCount(); i++){
             if(checkedItemPositions.get(i)){
-                ListaContaAdapterTO contaSelecionadaTO = getContaNaPosicao(i);
+                ContaTO contaSelecionadaTO = getContaNaPosicao(i);
                 Conta contaSelecionada = contaSelecionadaTO.getConta();
                 new ControladorConta(contaActivity).deletar(contaSelecionada);
                 deletadasMsg.append(contaSelecionada.getDescricao() + " ,");

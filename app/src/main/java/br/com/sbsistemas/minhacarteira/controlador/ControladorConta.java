@@ -7,7 +7,7 @@ import org.joda.time.LocalDate;
 
 import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
 import br.com.sbsistemas.minhacarteira.dao.ContaDAO;
 import br.com.sbsistemas.minhacarteira.dao.PrestacoesDAO;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
@@ -33,16 +33,16 @@ public class ControladorConta {
      * @param ano
      * @return
      */
-    public List<ListaContaAdapterTO> getContas(@Nullable Categoria categoria, int mes, int ano){
+    public List<ContaTO> getContas(@Nullable Categoria categoria, int mes, int ano){
         ContaDAO contaDAO = new ContaDAO(context);
-        List<ListaContaAdapterTO> contas = contaDAO.getContas(categoria, mes, ano);
+        List<ContaTO> contas = contaDAO.getContas(categoria, mes, ano);
         contaDAO.close();
         return  contas;
     }
 
-    public List<Conta> getContasNaoPagas(int dia, int mes, int ano){
+    public List<ContaTO> getContasNaoPagas(int dia, int mes, int ano){
         ContaDAO dao = new ContaDAO(context);
-        List<Conta> contasNaoPagas = dao.getContasNaoPagas(dia, mes, ano);
+        List<ContaTO> contasNaoPagas = dao.getContasNaoPagas(dia, mes, ano);
         dao.close();
         return contasNaoPagas;
     }

@@ -3,29 +3,31 @@ package br.com.sbsistemas.minhacarteira.notificacoes;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import net.danlew.android.joda.DateUtils;
-
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import br.com.sbsistemas.minhacarteira.ListaContasActivity;
 import br.com.sbsistemas.minhacarteira.ListaGrupos;
 import br.com.sbsistemas.minhacarteira.R;
+import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
+import br.com.sbsistemas.minhacarteira.broadcast.ActionReceiver;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 
@@ -35,6 +37,7 @@ public class ContasAPagarNotificationHandler extends Worker {
     private static final String CHANNEL_ID = "MINHA_CARTEIRA_CHANNEL_ID";
     private static final CharSequence CHANNEL_NAME = "MINHA_CARTEIRA_CHANNEL";
     private static final CharSequence NOTIFICATION_TITLE = "Veja suas contas a pagar hoje";
+    private static final String GRUPOS_CONTAS_NAO_PAGAS = "GRUPOS_CONTAS_NAO_PAGAS";
 
     public ContasAPagarNotificationHandler(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -45,22 +48,37 @@ public class ContasAPagarNotificationHandler extends Worker {
     public Result doWork() {
         ControladorConta ctrl = new ControladorConta(getApplicationContext());
         DateTime hoje = DateTime.now();
-        List<Conta> contasNaoPagas =
+        List<ContaTO> contasNaoPagas =
                 ctrl.getContasNaoPagas(hoje.getDayOfMonth(), hoje.getMonthOfYear(), hoje.getYear());
 
-        if(!contasNaoPagas.isEmpty()){
-            enviarNotificacoes(contasNaoPagas);
+        for (ContaTO conta: contasNaoPagas) {
+            enviarNotificacoes(conta);
         }
 
         return Result.success();
     }
 
-    private void enviarNotificacoes(List<Conta> contasNaoPagas) {
-        //todo criar uma intentlayer com ListaGrupos e ListaContas
-        Intent intent = new Intent(getApplicationContext(), ListaGrupos.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                0, intent, 0);
+    private void enviarNotificacoes(ContaTO contaTO) {
+        Intent listaGruposIntent = new Intent(getApplicationContext(), ListaGrupos.class);
+        Intent listaContasIntent = new Intent(getApplicationContext(), ListaContasActivity.class);
+        listaContasIntent.putExtra("data", LocalDate.now());
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+        stackBuilder.addNextIntent(listaGruposIntent).addNextIntent(listaContasIntent);
+        PendingIntent onclickPendingIntent = stackBuilder.getPendingIntent(
+                new Random().nextInt(), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent pagarcontaIntent = new Intent(getApplicationContext(), ActionReceiver.class);
+        pagarcontaIntent.putExtra(ActionReceiver.ACTION_KEY, ActionReceiver.ACTION_PAGAR);
+        pagarcontaIntent.putExtra(ActionReceiver.DATA_KEY, contaTO);
+        PendingIntent pagarPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                new Random().nextInt(), pagarcontaIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent desativarContaIntent = new Intent(getApplicationContext(), ActionReceiver.class);
+        desativarContaIntent.putExtra(ActionReceiver.ACTION_KEY, ActionReceiver.ACTION_DESATIVAR);
+        desativarContaIntent.putExtra(ActionReceiver.DATA_KEY, contaTO);
+        PendingIntent desativarPendindIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                new Random().nextInt(), desativarContaIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         NotificationManager notificationManager = (NotificationManager)getApplicationContext().
                 getSystemService(Context.NOTIFICATION_SERVICE);
@@ -74,13 +92,20 @@ public class ContasAPagarNotificationHandler extends Worker {
         NotificationCompat.Builder notificacao =
                 new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentTitle(NOTIFICATION_TITLE)
-                .setContentText(contasNaoPagas.get(0).getDescricao())
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText(getconteudoNotificacao(contaTO))
+                .setContentIntent(onclickPendingIntent)
+                .setSmallIcon(R.drawable.icon)
+                .setGroup(GRUPOS_CONTAS_NAO_PAGAS)
+                .addAction(0, "CONTA PAGA", pagarPendingIntent)
+                .addAction(0, "CONTA NÃO ATIVA", desativarPendindIntent)
                 .setAutoCancel(true);
 
-        Objects.requireNonNull(notificationManager).notify(contasNaoPagas.get(0).getId().intValue(),
+        Objects.requireNonNull(notificationManager).notify(contaTO.getConta().getId().intValue(),
                 notificacao.build());
+    }
+
+    private CharSequence getconteudoNotificacao(ContaTO contaTO) {
+        return contaTO.getConta().getDescricao() + " - " + contaTO.getConta().getValorFormatado();
     }
 
     public static void agendarNotificacao(){

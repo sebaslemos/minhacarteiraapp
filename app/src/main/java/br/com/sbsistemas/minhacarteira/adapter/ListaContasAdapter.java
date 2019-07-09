@@ -15,13 +15,11 @@ import android.widget.TextView;
 
 import org.joda.time.format.DateTimeFormat;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.listeners.CheckPagoListener;
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
-import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
+import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
@@ -33,14 +31,14 @@ import static br.com.sbsistemas.minhacarteira.dao.GrupoDAO.*;
  * Created by sebas on 31/08/2017.
  */
 
-public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
+public class ListaContasAdapter extends ArrayAdapter<ContaTO> {
 
     private Activity context;
-    private List<ListaContaAdapterTO> contaAdapterTOs;
+    private List<ContaTO> contaAdapterTOs;
     private CheckPagoListener listener;
     private SparseBooleanArray mSelecionados;
 
-    public ListaContasAdapter(@NonNull Activity context, @NonNull List<ListaContaAdapterTO> contaAdapterTOs, CheckPagoListener listener) {
+    public ListaContasAdapter(@NonNull Activity context, @NonNull List<ContaTO> contaAdapterTOs, CheckPagoListener listener) {
         super(context, R.layout.lista_contas_linha_conta , contaAdapterTOs);
         this.context = context;
         this.contaAdapterTOs = contaAdapterTOs;
@@ -76,7 +74,7 @@ public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
             holder = (ViewHolder) linha.getTag();
         }
 
-        ListaContaAdapterTO contaAdapterTO = this.contaAdapterTOs.get(position);
+        ContaTO contaAdapterTO = this.contaAdapterTOs.get(position);
         Conta conta = contaAdapterTO.getConta();
         final Prestacao prestacao = contaAdapterTO.getPrestacao();
 
@@ -155,7 +153,7 @@ public class ListaContasAdapter extends ArrayAdapter<ListaContaAdapterTO> {
 
     @Nullable
     @Override
-    public ListaContaAdapterTO getItem(int position) {
+    public ContaTO getItem(int position) {
         return contaAdapterTOs.get(position);
     }
 

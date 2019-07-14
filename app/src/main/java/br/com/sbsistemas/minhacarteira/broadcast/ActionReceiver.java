@@ -1,5 +1,6 @@
 package br.com.sbsistemas.minhacarteira.broadcast;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,5 +31,9 @@ public class ActionReceiver  extends BroadcastReceiver {
             prestacao.setAtivo(false);
         }
         ctr.atualiza(prestacao);
+
+        NotificationManager notificationManager = (NotificationManager)context.
+                getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(contaTO.getConta().getId().intValue());
     }
 }

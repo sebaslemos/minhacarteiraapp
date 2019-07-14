@@ -1,13 +1,17 @@
 package br.com.sbsistemas.minhacarteira.notificacoes;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -29,7 +33,7 @@ import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
 import br.com.sbsistemas.minhacarteira.broadcast.ActionReceiver;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
-import br.com.sbsistemas.minhacarteira.modelo.Conta;
+import br.com.sbsistemas.minhacarteira.utils.CorGrupo;
 
 public class ContasAPagarNotificationHandler extends Worker {
 
@@ -38,6 +42,7 @@ public class ContasAPagarNotificationHandler extends Worker {
     private static final CharSequence CHANNEL_NAME = "MINHA_CARTEIRA_CHANNEL";
     private static final CharSequence NOTIFICATION_TITLE = "Veja suas contas a pagar hoje";
     private static final String GRUPOS_CONTAS_NAO_PAGAS = "GRUPOS_CONTAS_NAO_PAGAS";
+    private static final int SUMMARY_ID = 999999999;
 
     public ContasAPagarNotificationHandler(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -51,11 +56,27 @@ public class ContasAPagarNotificationHandler extends Worker {
         List<ContaTO> contasNaoPagas =
                 ctrl.getContasNaoPagas(hoje.getDayOfMonth(), hoje.getMonthOfYear(), hoje.getYear());
 
+        if(contasNaoPagas.size() > 1){
+            criaGrupoNotificacao();
+        }
         for (ContaTO conta: contasNaoPagas) {
             enviarNotificacoes(conta);
         }
 
         return Result.success();
+    }
+
+    private void criaGrupoNotificacao() {
+        Notification notificacaoSummary = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                .setContentTitle(NOTIFICATION_TITLE)
+                .setContentText("TESTE")
+                .setGroup(GRUPOS_CONTAS_NAO_PAGAS)
+                .setGroupSummary(true)
+                .setSmallIcon(R.drawable.icon)
+                .build();
+
+        NotificationManagerCompat.from(getApplicationContext())
+                .notify(SUMMARY_ID, notificacaoSummary);
     }
 
     private void enviarNotificacoes(ContaTO contaTO) {
@@ -89,23 +110,33 @@ public class ContasAPagarNotificationHandler extends Worker {
             Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder notificacao =
+        Notification notificacao =
                 new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                .setContentTitle(NOTIFICATION_TITLE)
+                .setContentTitle("Lembre de pagar " + contaTO.getConta().getDescricao())
                 .setContentText(getconteudoNotificacao(contaTO))
                 .setContentIntent(onclickPendingIntent)
                 .setSmallIcon(R.drawable.icon)
-                .setGroup(GRUPOS_CONTAS_NAO_PAGAS)
+                .setLargeIcon(getIconeGrupo(contaTO))
                 .addAction(0, "CONTA PAGA", pagarPendingIntent)
                 .addAction(0, "CONTA NÃO ATIVA", desativarPendindIntent)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setGroup(GRUPOS_CONTAS_NAO_PAGAS)
+                .build();
 
-        Objects.requireNonNull(notificationManager).notify(contaTO.getConta().getId().intValue(),
-                notificacao.build());
+        NotificationManagerCompat.from(getApplicationContext()).notify(
+                contaTO.getConta().getId().intValue(),
+                notificacao);
+    }
+
+    private Bitmap getIconeGrupo(ContaTO contaTO) {
+        return BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                CorGrupo.getIconeGrande(contaTO.getGrupo().getDescricao()));
     }
 
     private CharSequence getconteudoNotificacao(ContaTO contaTO) {
-        return contaTO.getConta().getDescricao() + " - " + contaTO.getConta().getValorFormatado();
+        String msg = "A conta " + contaTO.getConta().getDescricao() + " deve ser paga hoje. Valor: "
+                + contaTO.getConta().getValorFormatado();
+        return msg;
     }
 
     public static void agendarNotificacao(){
@@ -116,6 +147,6 @@ public class ContasAPagarNotificationHandler extends Worker {
 
         WorkManager instance = WorkManager.getInstance();
         instance.enqueueUniquePeriodicWork(WORKER_TAG,
-                ExistingPeriodicWorkPolicy.KEEP, notificationWork);
+                ExistingPeriodicWorkPolicy.REPLACE, notificationWork);
     }
 }

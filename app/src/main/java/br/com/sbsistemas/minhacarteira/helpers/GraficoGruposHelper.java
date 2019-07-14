@@ -70,7 +70,7 @@ public class GraficoGruposHelper {
             if(!grupoAdapterTO.getGrupo().getDescricao().equals(GrupoDAO.GRUPO_TODAS)){
                 BarEntry barEntry = new BarEntry(i, grupoAdapterTO.getTotalGastos().floatValue());
                 barEntry.setIcon(contexto.getResources().getDrawable(corGrupo.
-                        getIcone(grupoAdapterTO.getGrupo().getDescricao()), null));
+                        getIconePequeno(grupoAdapterTO.getGrupo().getDescricao()), null));
                 entries.add(barEntry);
                 colors[indiceArrayCor++] = corGrupo.getCor(grupoAdapterTO.getGrupo().getDescricao());
             }

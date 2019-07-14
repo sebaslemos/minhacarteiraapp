@@ -2,6 +2,8 @@ package br.com.sbsistemas.minhacarteira.adapter.to;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
@@ -10,13 +12,13 @@ import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
  * Created by sebas on 01/09/2017.
  */
 
-public class ListaContaAdapterTO implements Comparable<ListaContaAdapterTO> {
+public class ContaTO implements Comparable<ContaTO>, Serializable {
 
     private Conta conta;
     private Prestacao prestacao;
     private Grupo grupo;
 
-    public ListaContaAdapterTO(Conta conta, Prestacao prestacao, Grupo grupo) {
+    public ContaTO(Conta conta, Prestacao prestacao, Grupo grupo) {
         this.conta = conta;
         this.prestacao = prestacao;
         this.grupo = grupo;
@@ -39,7 +41,7 @@ public class ListaContaAdapterTO implements Comparable<ListaContaAdapterTO> {
     }
 
     @Override
-    public int compareTo(@NonNull ListaContaAdapterTO o) {
+    public int compareTo(@NonNull ContaTO o) {
         int comparacaoData = prestacao.getData().compareTo(o.getPrestacao().getData());
         if(comparacaoData != 0) return comparacaoData;
 

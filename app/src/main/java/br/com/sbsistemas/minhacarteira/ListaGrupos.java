@@ -24,6 +24,7 @@ import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.helpers.GraficoGruposHelper;
 import br.com.sbsistemas.minhacarteira.helpers.ListaGruposHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
+import br.com.sbsistemas.minhacarteira.notificacoes.ContasAPagarNotificationHandler;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
 public class ListaGrupos extends AppCompatActivity {
@@ -43,6 +44,7 @@ public class ListaGrupos extends AppCompatActivity {
         setContentView(R.layout.activity_lista_grupos);
 
         iniciaComponentes();
+        ContasAPagarNotificationHandler.agendarNotificacao();
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
@@ -99,7 +99,7 @@ public class ContaDAO {
      * @param ano
      * @return
      */
-    public List<ListaContaAdapterTO> getContas(@Nullable Categoria categoria, int mes, int ano){
+    public List<ContaTO> getContas(@Nullable Categoria categoria, int mes, int ano){
         //TODO validações de datas
         String SQL;
         String[] args;
@@ -144,7 +144,7 @@ public class ContaDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);
 
-        List<ListaContaAdapterTO> listaContaAdapterTOs = cursorToList(cursor);
+        List<ContaTO> listaContaAdapterTOs = cursorToList(cursor);
         cursor.close();
         return listaContaAdapterTOs;
     }
@@ -154,8 +154,8 @@ public class ContaDAO {
         db.delete(NOME_TABELA, null, null);
     }
 
-    private List<ListaContaAdapterTO> cursorToList(Cursor cursor) {
-        List<ListaContaAdapterTO> contas = new ArrayList<ListaContaAdapterTO>();
+    private List<ContaTO> cursorToList(Cursor cursor) {
+        List<ContaTO> contas = new ArrayList<ContaTO>();
 
         while(cursor.moveToNext()){
             contas.add(cursorToContaTO(cursor));
@@ -164,7 +164,7 @@ public class ContaDAO {
         return contas;
     }
 
-    private ListaContaAdapterTO cursorToContaTO(Cursor cursor) {
+    private ContaTO cursorToContaTO(Cursor cursor) {
         Conta conta = new Conta();
         conta.setDescricao(cursor.getString(cursor.getColumnIndex(COLUNA_DESCRICAO)));
         conta.setId(cursor.getLong(cursor.getColumnIndex(ID)));
@@ -188,7 +188,7 @@ public class ContaDAO {
         Grupo grupo = new Grupo();
         grupo.setDescricao(cursor.getString(cursor.getColumnIndex("grupo_desc")));
 
-        return new ListaContaAdapterTO(conta, prestacao, grupo);
+        return new ContaTO(conta, prestacao, grupo);
     }
 
     public void remover(Conta conta) {
@@ -229,5 +229,28 @@ public class ContaDAO {
         conta.setTag(cursor.getLong(cursor.getColumnIndex(COLUNA_TAG_ID)));
         conta.setValor(new BigDecimal(cursor.getDouble(cursor.getColumnIndex(VALOR))));
         return conta;
+    }
+
+    public List<ContaTO> getContasNaoPagas(int dia, int mes, int ano) {
+        String SQL =
+                "SELECT c.*, p.id as prest_id, p.ativo, p.data, p.prestacao_numero, p.pago, grupo.descricao as grupo_desc "
+                + " FROM " + PrestacoesDAO.NOME_TABELA + " p "
+                + " INNER JOIN " + ContaDAO.NOME_TABELA  + " c "
+                +        " on " + "c." + ContaDAO.ID +  " = p." + PrestacoesDAO.CONTA_ID
+                + " INNER JOIN Categoria cat on cat.id = c.id_categoria "
+                + " INNER JOIN Grupo grupo on grupo.id = cat.id_grupo "
+                + " WHERE p." + PrestacoesDAO.DATA + " = ?"
+                + " AND p." + PrestacoesDAO.ATIVO + " = 1"
+                + " AND p." + PrestacoesDAO.COLUNA_PAGO + " = 0";
+        String[] args = new String[]{LocalDateUtils.getDataStr(dia, mes, ano)};
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SQL, args);
+        List<ContaTO> contas = new ArrayList<ContaTO>();
+        while (cursor.moveToNext()){
+            contas.add(cursorToContaTO(cursor));
+        }
+
+        return contas;
     }
 }

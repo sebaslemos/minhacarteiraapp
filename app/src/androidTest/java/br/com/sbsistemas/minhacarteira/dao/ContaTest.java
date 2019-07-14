@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import java.math.BigDecimal;
 import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.adapter.to.ListaContaAdapterTO;
+import br.com.sbsistemas.minhacarteira.adapter.to.ContaTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
@@ -74,7 +74,7 @@ public class ContaTest {
 
         Categoria vazia = new Categoria();
         vazia.setId(ID_CAT_SAIDAS);
-        List<ListaContaAdapterTO> contas = ctrlConta.getContas(vazia, 12, 2017);
+        List<ContaTO> contas = ctrlConta.getContas(vazia, 12, 2017);
 
         assertEquals(0, contas.size());
     }
@@ -104,8 +104,8 @@ public class ContaTest {
 
         ctrlConta.criarConta(compraOutra, true, new LocalDate(2017, 2, 1), true);
 
-        List<ListaContaAdapterTO> contasManutencao = ctrlConta.getContas(manutencao, 2, 2017);
-        List<ListaContaAdapterTO> contasOutras = ctrlConta.getContas(outraCategoria, 2, 2017);
+        List<ContaTO> contasManutencao = ctrlConta.getContas(manutencao, 2, 2017);
+        List<ContaTO> contasOutras = ctrlConta.getContas(outraCategoria, 2, 2017);
 
         assertEquals(1, contasOutras.size());
         assertEquals(1, contasManutencao.size());
@@ -125,8 +125,47 @@ public class ContaTest {
 
         ctrlConta.criarConta(compraMartelo, true, new LocalDate(2017, 12, 31), false);
 
-        List<ListaContaAdapterTO> contasManutencao = ctrlConta.getContas(manutencao, 12, 2017);
+        List<ContaTO> contasManutencao = ctrlConta.getContas(manutencao, 12, 2017);
         assertEquals(1, contasManutencao.size());
     }
 
+    @Test
+    public void testaContasAtivasDodia(){
+
+        //deve ir (ativa e não paga
+        Conta conta1 = new Conta();
+        conta1.setCategoria(ID_CAT_MANUTENCAO);
+        conta1.setDescricao("Conta 1");
+        conta1.setNumeroDePrestacoes(3);
+        conta1.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta1, false, new LocalDate(2018, 11, 3), true);
+
+        //nao deve ir, nao ativa
+        Conta conta2 = new Conta();
+        conta2.setCategoria(ID_CAT_MANUTENCAO);
+        conta2.setDescricao("Conta 2");
+        conta2.setNumeroDePrestacoes(1);
+        conta2.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta2, false, new LocalDate(2018, 12, 3), false);
+
+        //deve ir, ativa e nao paga
+        Conta conta3 = new Conta();
+        conta3.setCategoria(ID_CAT_MANUTENCAO);
+        conta3.setDescricao("Conta 3");
+        conta3.setNumeroDePrestacoes(1);
+        conta3.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta3, false, new LocalDate(2018, 12, 3), true);
+
+        //nao deve ir, ativa e paga
+        Conta conta4 = new Conta();
+        conta4.setCategoria(ID_CAT_MANUTENCAO);
+        conta4.setDescricao("Conta 4");
+        conta4.setNumeroDePrestacoes(1);
+        conta4.setValor(new BigDecimal(200));
+        ctrlConta.criarConta(conta4, true, new LocalDate(2018, 12, 03), true);
+
+        List<ContaTO> contasNaoPagas = ctrlConta.getContasNaoPagas(3, 12, 2018);
+
+        assertEquals(2, contasNaoPagas.size());
+    }
 }

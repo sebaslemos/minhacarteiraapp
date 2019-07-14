@@ -147,6 +147,6 @@ public class ContasAPagarNotificationHandler extends Worker {
 
         WorkManager instance = WorkManager.getInstance();
         instance.enqueueUniquePeriodicWork(WORKER_TAG,
-                ExistingPeriodicWorkPolicy.REPLACE, notificationWork);
+                ExistingPeriodicWorkPolicy.KEEP, notificationWork);
     }
 }

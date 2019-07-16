@@ -1,7 +1,8 @@
 package br.com.sbsistemas.minhacarteira.helpers;
 
-import android.support.annotation.Nullable;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -12,7 +13,6 @@ import org.joda.time.LocalDate;
 import java.math.BigDecimal;
 
 import br.com.sbsistemas.minhacarteira.ListaCategoriasActivity;
-import br.com.sbsistemas.minhacarteira.ListaContasActivity;
 import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;

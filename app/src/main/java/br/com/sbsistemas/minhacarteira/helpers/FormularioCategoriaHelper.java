@@ -1,18 +1,10 @@
 package br.com.sbsistemas.minhacarteira.helpers;
 
 import android.content.Intent;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;

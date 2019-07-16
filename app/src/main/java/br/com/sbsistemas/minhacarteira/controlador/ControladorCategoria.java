@@ -1,7 +1,6 @@
 package br.com.sbsistemas.minhacarteira.controlador;
 
 import android.content.Context;
-import android.widget.TextView;
 
 import org.joda.time.LocalDate;
 

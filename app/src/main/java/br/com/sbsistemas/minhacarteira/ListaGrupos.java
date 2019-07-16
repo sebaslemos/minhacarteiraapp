@@ -4,26 +4,24 @@ package br.com.sbsistemas.minhacarteira;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 
-import br.com.sbsistemas.minhacarteira.adapter.to.GrupoAdapterTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.helpers.GraficoGruposHelper;
 import br.com.sbsistemas.minhacarteira.helpers.ListaGruposHelper;
-import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.notificacoes.ContasAPagarNotificationHandler;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 
@@ -44,7 +42,7 @@ public class ListaGrupos extends AppCompatActivity {
         setContentView(R.layout.activity_lista_grupos);
 
         iniciaComponentes();
-        ContasAPagarNotificationHandler.agendarNotificacao();
+        ContasAPagarNotificationHandler.agendarNotificacao(this);
     }
 
     @Override

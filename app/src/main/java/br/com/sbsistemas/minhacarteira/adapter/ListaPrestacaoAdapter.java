@@ -1,22 +1,19 @@
 package br.com.sbsistemas.minhacarteira.adapter;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.EditaContaActivity;
-import br.com.sbsistemas.minhacarteira.FormularioContaActivity;
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.listeners.PrestacaoChangedListener;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;

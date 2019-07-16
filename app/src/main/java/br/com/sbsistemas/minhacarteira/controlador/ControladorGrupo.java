@@ -5,14 +5,11 @@ import android.content.Context;
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import br.com.sbsistemas.minhacarteira.adapter.to.EstatisticaTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
-import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 /**

@@ -1,7 +1,5 @@
 package br.com.sbsistemas.minhacarteira.util;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
 import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Test;

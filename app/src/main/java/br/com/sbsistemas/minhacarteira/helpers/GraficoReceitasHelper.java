@@ -8,7 +8,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.EntryXComparator;
 
 import org.joda.time.LocalDate;
 
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.utils.CorGrupo;

@@ -1,31 +1,19 @@
 package br.com.sbsistemas.minhacarteira;
 
 import android.app.DialogFragment;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import androidx.appcompat.app.AppCompatActivity;
 
-import br.com.sbsistemas.minhacarteira.adapter.FormularioCategoriaListAdapter;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
-import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.dialogs.ExclusaoCategoriaDialogFragment;
 import br.com.sbsistemas.minhacarteira.helpers.FormularioCategoriaHelper;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
-import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 public class FormularioCategoriaActivity extends AppCompatActivity implements
         ExclusaoCategoriaDialogFragment.ExclusaoCategoriaDialogListener {

@@ -1,6 +1,6 @@
 package br.com.sbsistemas.minhacarteira.adapter.to;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 

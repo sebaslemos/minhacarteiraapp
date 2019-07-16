@@ -3,32 +3,25 @@ package br.com.sbsistemas.minhacarteira;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
 
-import br.com.sbsistemas.minhacarteira.adapter.to.CategoriaAdapterTO;
 import br.com.sbsistemas.minhacarteira.adapter.to.QuantidadeValorTO;
-import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorReceitas;
 import br.com.sbsistemas.minhacarteira.dao.GrupoDAO;
 import br.com.sbsistemas.minhacarteira.helpers.EstatisticasCategoriaHelper;
 import br.com.sbsistemas.minhacarteira.helpers.GraficoCategoriaHelper;
 import br.com.sbsistemas.minhacarteira.helpers.ListaCategoriasHelper;
-import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.utils.LocalDateUtils;
 

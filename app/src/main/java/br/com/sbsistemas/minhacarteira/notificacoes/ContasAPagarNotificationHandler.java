@@ -9,10 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -139,14 +139,23 @@ public class ContasAPagarNotificationHandler extends Worker {
         return msg;
     }
 
-    public static void agendarNotificacao(){
+    public static void agendarNotificacao(Context context){
         PeriodicWorkRequest notificationWork = new PeriodicWorkRequest.
                 Builder(ContasAPagarNotificationHandler.class, 1, TimeUnit.DAYS)
                 .addTag(WORKER_TAG)
+                .setInitialDelay(getdelayHours(), TimeUnit.HOURS)
                 .build();
 
-        WorkManager instance = WorkManager.getInstance();
+        WorkManager instance = WorkManager.getInstance(context);
         instance.enqueueUniquePeriodicWork(WORKER_TAG,
-                ExistingPeriodicWorkPolicy.KEEP, notificationWork);
+                ExistingPeriodicWorkPolicy.REPLACE, notificationWork);
+    }
+
+    private static long getdelayHours() {
+        int horaParaAgendar = 8;
+        int horaAtual = DateTime.now().getHourOfDay();
+
+        return horaParaAgendar > horaAtual ? horaParaAgendar - horaAtual :
+                24 - horaAtual + 8;
     }
 }

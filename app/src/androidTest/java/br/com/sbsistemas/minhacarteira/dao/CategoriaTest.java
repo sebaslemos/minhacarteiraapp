@@ -1,11 +1,10 @@
 package br.com.sbsistemas.minhacarteira.dao;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.joda.time.LocalDate;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +15,6 @@ import java.util.List;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorConta;
 import br.com.sbsistemas.minhacarteira.controlador.ControladorGrupo;
-import br.com.sbsistemas.minhacarteira.dao.CategoriaDAO;
 import br.com.sbsistemas.minhacarteira.exception.CategoriaRepetidaException;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Conta;
@@ -24,10 +22,8 @@ import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 import br.com.sbsistemas.minhacarteira.modelo.Prestacao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**

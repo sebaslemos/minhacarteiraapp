@@ -6,7 +6,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -18,8 +17,6 @@ import java.util.Locale;
 import br.com.sbsistemas.minhacarteira.ListaCategoriasActivity;
 import br.com.sbsistemas.minhacarteira.R;
 import br.com.sbsistemas.minhacarteira.adapter.to.CategoriaAdapterTO;
-import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
-import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
 
 /**

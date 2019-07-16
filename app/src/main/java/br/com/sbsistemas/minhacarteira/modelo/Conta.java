@@ -1,10 +1,7 @@
 package br.com.sbsistemas.minhacarteira.modelo;
 
-import org.joda.time.LocalDate;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Created by sebas on 04/08/2017.

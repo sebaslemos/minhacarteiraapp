@@ -85,7 +85,7 @@ public class GrupoAdapter extends ArrayAdapter<GrupoAdapterTO>{
                 viewHolder.icone.setImageResource(R.drawable.grupo_transporte);
                 break;
             default:
-                viewHolder.icone.setImageResource(R.drawable.grupo_transporte);
+                viewHolder.icone.setImageResource(R.drawable.grupo_todas);
                 break;
         }
 

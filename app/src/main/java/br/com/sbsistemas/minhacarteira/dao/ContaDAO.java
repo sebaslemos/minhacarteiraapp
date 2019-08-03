@@ -240,10 +240,13 @@ public class ContaDAO {
                 +        " on " + "c." + ContaDAO.ID +  " = p." + PrestacoesDAO.CONTA_ID
                 + " INNER JOIN Categoria cat on cat.id = c.id_categoria "
                 + " INNER JOIN Grupo grupo on grupo.id = cat.id_grupo "
-                + " WHERE p." + PrestacoesDAO.DATA + " = ?"
-                + " AND p." + PrestacoesDAO.ATIVO + " = 1"
+                + " WHERE p." + PrestacoesDAO.DATA + " >= ? "
+                + " AND p." + PrestacoesDAO.DATA + " <= ? "
+                + " AND p." + PrestacoesDAO.ATIVO + " = 1 "
                 + " AND p." + PrestacoesDAO.COLUNA_PAGO + " = 0";
-        String[] args = new String[]{LocalDateUtils.getDataStr(dia, mes, ano)};
+        String inicioMes = LocalDateUtils.getInicioMes(mes, ano);
+        String dataHoje = LocalDateUtils.getDataStr(dia, mes, ano);
+        String[] args = new String[]{inicioMes, dataHoje};
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(SQL, args);

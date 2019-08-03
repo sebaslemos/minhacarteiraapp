@@ -19,6 +19,7 @@ import br.com.sbsistemas.minhacarteira.controlador.ControladorCategoria;
 import br.com.sbsistemas.minhacarteira.exception.CategoriaRepetidaException;
 import br.com.sbsistemas.minhacarteira.modelo.Categoria;
 import br.com.sbsistemas.minhacarteira.modelo.Grupo;
+import br.com.sbsistemas.minhacarteira.utils.CorGrupo;
 
 /**
  * Created by sebas on 26/08/2017.
@@ -79,13 +80,15 @@ public class FormularioCategoriaListAdapter extends BaseExpandableListAdapter {
                     R.layout.formulario_categoria_linha_grupo, parent, false);
 
         TextView grupoText = convertView.findViewById(R.id.formulario_categoria_linha_grupo_text);
-        grupoText.setText(grupos.get(groupPosition).getDescricao());
+        Grupo grupo = grupos.get(groupPosition);
+        grupoText.setText(grupo.getDescricao());
 
         if(isExpanded){
             grupoText.setTypeface(null, Typeface.BOLD);
         } else {
             grupoText.setTypeface(null, Typeface.NORMAL);
         }
+        grupoText.setTextColor(CorGrupo.getCor(grupo.getDescricao()));
 
         return convertView;
     }
@@ -114,6 +117,7 @@ public class FormularioCategoriaListAdapter extends BaseExpandableListAdapter {
             categoriaText.setText(categoria.getDescricao());
             novaCategoriaText.setVisibility(View.GONE);
             botaoSalvar.setVisibility(View.GONE);
+            categoriaText.setTextColor(CorGrupo.getCor(grupo.getDescricao()));
         }
 
         botaoSalvar.setOnClickListener(new View.OnClickListener() {

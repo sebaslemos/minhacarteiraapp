@@ -2,4 +2,8 @@
     <string name="app_name">Minha Carteira</string>
     <string name="mes_anterior">&lt;</string>
     <string name="mes_posterior">></string>
+    <string name="adicionar_conta_shortcut_short">Nova Conta</string>
+    <string name="adicionar_conta_shortcut_long">Adicionar Conta</string>
+    <string name="adicionar_receita_shortcut_short">Nova Receita</string>
+    <string name="adicionar_receita_shortcut_long">Adicionar Receita</string>
 </resources>

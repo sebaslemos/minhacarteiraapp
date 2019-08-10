@@ -1,6 +1,7 @@
 package br.com.sbsistemas.minhacarteira;
 
 import android.app.DatePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,7 +67,11 @@ public class FormularioReceiraActivity extends AppCompatActivity {
             }
         }, data.getYear(), data.getMonthOfYear() - 1, data.getDayOfMonth());
 
-        pickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day","id","android")).setVisibility(View.GONE);
+
+        //A View para seleção com apenas mês e ano não funciona no android 7 (sdk 24)
+        if(Build.VERSION.SDK_INT != 24){
+            pickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day","id","android")).setVisibility(View.GONE);
+        }
         pickerDialog.show();
     }
 

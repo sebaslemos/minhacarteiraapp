@@ -52,12 +52,14 @@ public class EditaContaActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Categoria categoria = (Categoria) data.getExtras().getSerializable("CategoriaClicada");
-        categoriaText.setText(categoria.getDescricao());
+        if(data != null){
+            Categoria categoria = (Categoria) data.getExtras().getSerializable("CategoriaClicada");
+            categoriaText.setText(categoria.getDescricao());
 
-        ControladorGrupo controladorGrupo = new ControladorGrupo(this);
-        Grupo grupo = controladorGrupo.getGrupo(categoria.getIdGrupo());
-        grupoText.setText(grupo.getDescricao());
+            ControladorGrupo controladorGrupo = new ControladorGrupo(this);
+            Grupo grupo = controladorGrupo.getGrupo(categoria.getIdGrupo());
+            grupoText.setText(grupo.getDescricao());
+        }
     }
 
     @Override
